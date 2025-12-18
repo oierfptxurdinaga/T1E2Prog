@@ -1,6 +1,6 @@
 package E2;
 
-public class Presidentea extends Erabiltzaileak {
+public class Presidentea extends ErabiltzaileMota {
 
 	public Presidentea(String izena, String abizena, String NAN, String erabiltzailea, String pasahitza) {
 		super(izena, abizena, NAN, erabiltzailea, pasahitza);
@@ -33,17 +33,8 @@ public class Presidentea extends Erabiltzaileak {
 	public void setpasahitza(String pasahitza) {
 		Pasahitza = pasahitza;
 	}
-	
-	@Override
-	public String toString() {
-		return "Presidentea [izena()=" + getizena() + ", abizena()=" + getabizena() + ", NAN()=" + getNAN()
-				+ ", erabiltzailea()=" + geterabiltzailea() + ", pasahitza()=" + getpasahitza() + ", baimenak()="
-				+ baimenak() + "]";
-	}
-
 	@Override
 	public boolean baimenak() {
 		return false;
 	}
-
 }

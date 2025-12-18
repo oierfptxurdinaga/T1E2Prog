@@ -30,8 +30,4 @@ public class Denboraldia {
 	public void setDenboraldiaP(ArrayList<Puntuazioa> denboraldiaP) {
 		DenboraldiaP = denboraldiaP;
 	}
-	@Override
-	public String toString() {
-		return "Denboraldia [Data=" + Data + ", Denboraldia=" + Denboraldia + ", DenboraldiaP=" + DenboraldiaP + "]";
-	}
 }

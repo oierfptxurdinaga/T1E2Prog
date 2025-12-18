@@ -1,6 +1,6 @@
 package E2;
 
-public class Jokalariak {
+public class Jokalaria {
 	private String Izena;
 	private String Abizena;
 	private String JaiotzeData;
@@ -11,7 +11,7 @@ public class Jokalariak {
 	private int Dortsala;
 	private boolean Kapitaina;
 	
-	public Jokalariak(String izena, String abizena, String jaiotzeData, String nAN, String taldea, int prezioa,
+	public Jokalaria(String izena, String abizena, String jaiotzeData, String nAN, String taldea, int prezioa,
 			int jokalarienPuntuak, int dortsala, boolean kapitaina) {
 		super();
 		Izena = izena;
@@ -88,13 +88,4 @@ public class Jokalariak {
 	public String getNAN() {
 		return NAN;
 	}
-
-	@Override
-	public String toString() {
-		return "Jokalariak [Izena=" + Izena + ", Abizena=" + Abizena + ", JaiotzeData=" + JaiotzeData + ", NAN=" + NAN
-				+ ", Taldea=" + Taldea + ", Prezioa=" + Prezioa + ", JokalarienPuntuak=" + JokalarienPuntuak
-				+ ", Dortsala=" + Dortsala + ", Kapitaina=" + Kapitaina + "]";
-	}
 }
-
-	

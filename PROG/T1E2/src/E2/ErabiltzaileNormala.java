@@ -1,8 +1,8 @@
 package E2;
 
-public class Usuario extends Erabiltzaileak {
+public class ErabiltzaileNormala extends ErabiltzaileMota {
 
-	public Usuario(String izena, String abizena, String NAN, String erabiltzailea, String pasahitza) {
+	public ErabiltzaileNormala(String izena, String abizena, String NAN, String erabiltzailea, String pasahitza) {
 		super(izena, abizena, NAN, erabiltzailea, pasahitza);
 	}
 
@@ -32,13 +32,6 @@ public class Usuario extends Erabiltzaileak {
 	}
 	public void setpasahitza(String pasahitza) {
 		Pasahitza = pasahitza;
-	}
-	
-	@Override
-	public String toString() {
-		return "Usuario [izena()=" + getizena() + ", abizena()=" + getabizena() + ", NAN()=" + getNAN()
-				+ ", erabiltzailea()=" + geterabiltzailea() + ", pasahitza()=" + getpasahitza() + ", baimenak()="
-				+ baimenak() + "]";
 	}
 
 	@Override

@@ -3,7 +3,7 @@ package E2;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class Taldeak {
+public class Taldea {
 	private String Izena;
 	private String Logoa;
 	private String SorreraUrtea;
@@ -14,10 +14,10 @@ public class Taldeak {
 	private int PuntuTotalak;
 	private int Irabazitakoak;
 	private int Galdutakoak;
-	private ArrayList<Jokalariak> jokalariak;
+	private ArrayList<Jokalaria> jokalariak;
 	
-	public Taldeak(String izena, String logoa, String sorreraUrtea, String lehendakari, int n_Bazkideak, int puntuakF,
-			int puntuakC, int puntuTotalak, int irabazitakoak, int galdutakoak, ArrayList<Jokalariak> jokalariak2) {
+	public Taldea(String izena, String logoa, String sorreraUrtea, String lehendakari, int n_Bazkideak, int puntuakF,
+			int puntuakC, int puntuTotalak, int irabazitakoak, int galdutakoak, ArrayList<Jokalaria> jokalariak2) {
 		super();
 		Izena = izena;
 		Logoa = logoa;
@@ -104,25 +104,15 @@ public class Taldeak {
 		Galdutakoak = galdutakoak;
 	}
 
-	public ArrayList<Jokalariak> getJokalariak() {
+	public ArrayList<Jokalaria> getJokalariak() {
 		return jokalariak;
 	}
 
-	public void setJokalariak(ArrayList<Jokalariak> jokalariak) {
+	public void setJokalariak(ArrayList<Jokalaria> jokalariak) {
 		this.jokalariak = jokalariak;
 	}
 
 	public String getSorreraUrtea() {
 		return SorreraUrtea;
 	}
-
-	@Override
-	public String toString() {
-		return "Taldeak [Izena=" + Izena + ", Logoa=" + Logoa + ", SorreraUrtea=" + SorreraUrtea + ", Lehendakari="
-				+ Lehendakari + ", N_Bazkideak=" + N_Bazkideak + ", PuntuakF=" + PuntuakF + ", PuntuakC=" + PuntuakC
-				+ ", PuntuTotalak=" + PuntuTotalak + ", Irabazitakoak=" + Irabazitakoak + ", Galdutakoak=" + Galdutakoak
-				+ ", jokalariak=" + jokalariak + "]";
-	}
-
-
 }

@@ -53,9 +53,4 @@ public class Partidua {
 	public void setOrdua(String ordua) {
 		Ordua = ordua;
 	}
-	@Override
-	public String toString() {
-		return "Partidua [TaldeLokala=" + TaldeLokala + ", TaldeBisitari=" + TaldeBisitari + ", ResultLokala="
-				+ ResultLokala + ", ResulBisitari=" + ResulBisitari + ", Data=" + Data + ", Ordua=" + Ordua + "]";
-	}
 }

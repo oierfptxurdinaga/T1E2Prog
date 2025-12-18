@@ -1,6 +1,6 @@
 package E2;
 
-public class Administradorea extends Erabiltzaileak {
+public class Administradorea extends ErabiltzaileMota {
 
 	public Administradorea(String izena, String abizena, String NAN, String erabiltzailea, String pasahitza) {
 		super(izena, abizena, NAN, erabiltzailea, pasahitza);
@@ -34,12 +34,6 @@ public class Administradorea extends Erabiltzaileak {
 		Pasahitza = pasahitza;
 	}
 	
-	@Override
-	public String toString() {
-		return "Administradorea [izena()=" + getizena() + ", abizena()=" + getabizena() + ", NAN()=" + getNAN()
-				+ ", erabiltzailea()=" + geterabiltzailea() + ", pasahitza()=" + getpasahitza() + ", baimenak()="
-				+ baimenak() + "]";
-	}
 	@Override
 	public boolean baimenak() {
 		

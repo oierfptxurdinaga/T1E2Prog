@@ -17,11 +17,4 @@ public class Jaurdunaldia {
 	public void setJaurdunaldia(ArrayList<Partidua> jaurdunaldia) {
 		this.jaurdunaldia = jaurdunaldia;
 	}
-
-	@Override
-	public String toString() {
-		return "Jaurdunaldia [jaurdunaldia=" + jaurdunaldia + "]";
-	}
-
-	
 }

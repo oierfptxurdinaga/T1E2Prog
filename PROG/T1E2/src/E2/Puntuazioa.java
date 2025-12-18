@@ -3,23 +3,18 @@ package E2;
 import java.util.ArrayList;
 
 public class Puntuazioa {
-	private ArrayList<Taldeak> Puntuazioa;
+	private ArrayList<Taldea> Puntuazioa;
 
-	public Puntuazioa(ArrayList<Taldeak> puntuazioa) {
+	public Puntuazioa(ArrayList<Taldea> puntuazioa) {
 		super();
 		Puntuazioa = puntuazioa;
 	}
 
-	public ArrayList<Taldeak> getPuntuazioa() {
+	public ArrayList<Taldea> getPuntuazioa() {
 		return Puntuazioa;
 	}
 
-	public void setPuntuazioa(ArrayList<Taldeak> puntuazioa) {
+	public void setPuntuazioa(ArrayList<Taldea> puntuazioa) {
 		Puntuazioa = puntuazioa;
-	}
-
-	@Override
-	public String toString() {
-		return "Puntuazioa [Puntuazioa=" + Puntuazioa + "]";
 	}
 }
