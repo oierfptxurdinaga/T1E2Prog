@@ -15,5 +15,14 @@ public abstract class ErabiltzaileMota {
 		this.Erabiltzailea = erabiltzailea;
 		this.Pasahitza = pasahitza;
 	}
-	public abstract boolean baimenak();
+	
+	public String getErabiltzailea() {
+		return Erabiltzailea;
+	}
+	
+	public String getPasahitza() {
+		return Pasahitza;
+	}
+	
+	public abstract String baimenak();
 }

@@ -2,6 +2,9 @@ package Main;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
+import E2.ErabiltzaileMota;
+import Metodoak.Metodoak;
 
 public class ErronkaBisuala extends JFrame {
 
@@ -9,6 +12,9 @@ public class ErronkaBisuala extends JFrame {
     // 1. Atrbutuak Ordenez Jarrita
     // ==========================================================
 
+	// --- Atributuak POJO-entzako ---
+	private ArrayList<ErabiltzaileMota> erabiltzaileakList;
+	
     // Nabegazio Layouta eta Content Panel-a
     private CardLayout cardLayout;
     private JPanel contentPanel;
@@ -82,8 +88,33 @@ public class ErronkaBisuala extends JFrame {
         contentPanel.add(TaldeakPanela, "Taldeak");
         contentPanel.add(JokalariakPanela, "Jokalariak");
 
-        // 3. Nabegazioa panelen artean
-        sartu.addActionListener(e -> cardLayout.show(contentPanel, "Hasiera"));
+        // 3. Nabegazioa panelen artean eta botoien ekintzak
+        sartu.addActionListener(e -> {
+        	
+            // 1. Erabiltzailearen sarrerak lortzen ditu
+            String usernameInput = textErabiltzaile.getText();
+            String passwordInput = new String(textPasahitza.getPassword());
+            
+            // 2. Sarrerak balidatu hutsik dauden
+            if (usernameInput.trim().isEmpty() || passwordInput.trim().isEmpty()) {
+				JOptionPane.showMessageDialog(null, "Mesedez, bete eremu guztiak.", "Errorea", JOptionPane.ERROR_MESSAGE);
+				return; // Ez jarraitu hurrengo pausoekin
+			}
+            
+            // 3. Balidazioari deitu
+            String rola = Metodoak.login(usernameInput, passwordInput);
+
+            // 4. Zer aldatu behar den erabaki erabiltzailearen rolaren arabera
+            if (rola != null) { 
+                // Éxito:
+                erakutsiPanelak(rola); // Habilitar/Deshabilitar botones
+                cardLayout.show(contentPanel, "Hasiera");
+            } else {
+                // Erabiltzailea edo pasahitza okerra
+            	JOptionPane.showMessageDialog(null, "Erabiltzaile edo Pasahitz okerra", "Errorea", JOptionPane.ERROR_MESSAGE);
+                
+            }
+        });
         atzerantz.addActionListener(e -> cardLayout.show(contentPanel, "Login"));
         atera.addActionListener(e -> System.exit(0));
         
@@ -257,7 +288,41 @@ public class ErronkaBisuala extends JFrame {
         
         return panel;
     }
-
+    
+    /*==============
+     Login Metodoak
+	 ===============*/
+     
+    private void erakutsiPanelak(String rola) {
+        
+        // 1. Botoiak desgaitu lehenik
+        klasifikazioaIkusi.setEnabled(false);
+        sartuEmaitza.setEnabled(false);
+        taldeakIkusi.setEnabled(false);
+        jokalariakAldatu.setEnabled(false);
+        
+        // 2. Rolaren Arabera Botoiak Aktibatu
+        switch (rola) {
+            case "Admin":
+                // Administradoreak ser ikus dezake eta aldatu.
+                klasifikazioaIkusi.setEnabled(true);
+                sartuEmaitza.setEnabled(true);
+                taldeakIkusi.setEnabled(true);
+                break;
+            case "Presidente":
+                // Presidentea ser ikus dezake eta aldatu.
+                klasifikazioaIkusi.setEnabled(true);
+                taldeakIkusi.setEnabled(true);
+                jokalariakAldatu.setEnabled(true);
+                break;
+            case "Arrunta":
+                // Arrunta ser ikus dezake.
+                klasifikazioaIkusi.setEnabled(true);
+                taldeakIkusi.setEnabled(true);
+                break;
+        }
+    }
+    
 
     // ==========================================================
     // 5. MAIN

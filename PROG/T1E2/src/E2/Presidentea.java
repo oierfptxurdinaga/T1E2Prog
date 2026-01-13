@@ -33,8 +33,9 @@ public class Presidentea extends ErabiltzaileMota {
 	public void setpasahitza(String pasahitza) {
 		Pasahitza = pasahitza;
 	}
+	
 	@Override
-	public boolean baimenak() {
-		return false;
+	public String baimenak() {
+		return "Presidentea";
 	}
 }

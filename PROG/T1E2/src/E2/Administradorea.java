@@ -35,9 +35,9 @@ public class Administradorea extends ErabiltzaileMota {
 	}
 	
 	@Override
-	public boolean baimenak() {
+	public String baimenak() {
 		
-		return false;
+		return "Admin";
 	}
 
 }

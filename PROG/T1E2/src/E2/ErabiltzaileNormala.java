@@ -35,8 +35,8 @@ public class ErabiltzaileNormala extends ErabiltzaileMota {
 	}
 
 	@Override
-	public boolean baimenak() {
-		return false;
+	public String baimenak() {
+		return "Arrunta";
 	}
 
 }
