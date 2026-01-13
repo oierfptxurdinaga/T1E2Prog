@@ -13,7 +13,7 @@ public class ErronkaBisuala extends JFrame {
     // ==========================================================
 
 	// --- Atributuak POJO-entzako ---
-	private ArrayList<ErabiltzaileMota> erabiltzaileakList;
+
 	
     // Nabegazio Layouta eta Content Panel-a
     private CardLayout cardLayout;
