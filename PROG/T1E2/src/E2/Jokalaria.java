@@ -1,6 +1,11 @@
 package E2;
 
-public class Jokalaria {
+import java.io.Serializable;
+
+public class Jokalaria implements Serializable {
+    private static final long serialVersionUID = 1L;
+	
+	
 	private String Izena;
 	private String Abizena;
 	private String JaiotzeData;
@@ -8,11 +13,10 @@ public class Jokalaria {
 	private String Taldea;
 	private int Prezioa;
 	private int JokalarienPuntuak;
-	private int Dortsala;
-	private boolean Kapitaina;
+
 	
 	public Jokalaria(String izena, String abizena, String jaiotzeData, String nAN, String taldea, int prezioa,
-			int jokalarienPuntuak, int dortsala, boolean kapitaina) {
+			int jokalarienPuntuak) {
 		super();
 		Izena = izena;
 		Abizena = abizena;
@@ -21,8 +25,6 @@ public class Jokalaria {
 		Taldea = taldea;
 		Prezioa = prezioa;
 		JokalarienPuntuak = jokalarienPuntuak;
-		Dortsala = dortsala;
-		Kapitaina = kapitaina;
 	}
 
 	public String getIzena() {
@@ -63,22 +65,6 @@ public class Jokalaria {
 
 	public void setJokalarienPuntuak(int jokalarienPuntuak) {
 		JokalarienPuntuak = jokalarienPuntuak;
-	}
-
-	public int getDortsala() {
-		return Dortsala;
-	}
-
-	public void setDortsala(int dortsala) {
-		Dortsala = dortsala;
-	}
-
-	public boolean isKapitaina() {
-		return Kapitaina;
-	}
-
-	public void setKapitaina(boolean kapitaina) {
-		Kapitaina = kapitaina;
 	}
 
 	public String getJaiotzeData() {
