@@ -8,7 +8,6 @@ public abstract class ErabiltzaileMota {
 	protected String Pasahitza;
 	
 	public ErabiltzaileMota(String izena, String abizena, String NAN, String erabiltzailea, String pasahitza) {
-		super();
 		this.Izena = izena;
 		this.Abizena = abizena;
 		this.NAN = NAN;
