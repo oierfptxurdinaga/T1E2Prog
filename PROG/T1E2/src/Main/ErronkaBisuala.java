@@ -1,9 +1,12 @@
 package Main;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+
 import java.awt.*;
 import java.util.ArrayList;
 import E2.ErabiltzaileMota;
+import E2.Taldea;
 import Metodoak.Metodoak;
 
 public class ErronkaBisuala extends JFrame {
@@ -51,6 +54,12 @@ public class ErronkaBisuala extends JFrame {
     private JButton taldeakIkusi;
     private JButton jokalariakAldatu;
 
+ // --- Osagaiak JPanel 3: KlasifikazioaPanela ---
+    private JButton atzerantzKlasif;
+    private JButton ateraKlasif;
+    private JTable tablaKlasif;
+    private DefaultTableModel modeloTabla;
+    private JScrollPane scrollTabla;
 
     // ==========================================================
     // 2. Eraikitzailea
@@ -92,6 +101,9 @@ public class ErronkaBisuala extends JFrame {
 
         // 3. Nabegazioa panelen artean eta botoien ekintzak
         
+        // ===============================================
+        // -------------- LOGIN PANELA -------------------
+        // ===============================================
         // --- GEHITUTAKOA: atera1 botoiaren logika ---
         atera1.addActionListener(e -> {
             int respuesta = JOptionPane.showConfirmDialog(null, "Ziur zaude programa itxi nahi duzula?", "Irten", JOptionPane.YES_NO_OPTION);
@@ -123,7 +135,9 @@ public class ErronkaBisuala extends JFrame {
                 JOptionPane.showMessageDialog(null, "Erabiltzaile edo Pasahitz okerra", "Errorea", JOptionPane.ERROR_MESSAGE);
             }
         });
-
+        // ==========================================================
+        // -------------- HASIERAKO PANELA --------------------------
+        // ==========================================================
         atzerantz.addActionListener(e -> cardLayout.show(contentPanel, "Login"));
         
         // --- atera2 botoiak ere fitxategia eguneratu dezan ---
@@ -143,7 +157,37 @@ public class ErronkaBisuala extends JFrame {
             }
         });
         
-        klasifikazioaIkusi.addActionListener(e -> cardLayout.show(contentPanel, "Klasifikazioa"));
+     // ==========================================================
+     // -------------- KLASIFIKAZIOA PANELA ---------------------
+     // ==========================================================
+
+     klasifikazioaIkusi.addActionListener(e -> {
+         // 1. Cargamos los datos de la lista maestra a la tabla antes de entrar
+         eguneratuKlasifikazioa(); 
+         
+         // 2. Mostramos el panel
+         cardLayout.show(contentPanel, "Klasifikazioa");
+     });
+
+     // No olvides los botones de navegación de DENTRO del panel Klasifikazioa
+     atzerantzKlasif.addActionListener(e -> cardLayout.show(contentPanel, "Hasiera"));
+     ateraKlasif.addActionListener(e -> {
+    	    int respuesta = JOptionPane.showConfirmDialog(
+    	        null, 
+    	        "Ziur zaude programa itxi nahi duzula?", 
+    	        "Irten", 
+    	        JOptionPane.YES_NO_OPTION
+    	    );
+
+    	    if (respuesta == JOptionPane.YES_OPTION) {
+    	        // Gorde aldaketak irten baino lehen
+    	        Metodoak.gordeDatuak();
+    	        System.exit(0);
+    	    }
+    	});
+        
+        
+        // Botoiak De momento Panelerako
         sartuEmaitza.addActionListener(e -> cardLayout.show(contentPanel, "Emaitzak"));
         taldeakIkusi.addActionListener(e -> cardLayout.show(contentPanel, "Taldeak"));
         jokalariakAldatu.addActionListener(e -> cardLayout.show(contentPanel, "Jokalariak"));
@@ -166,7 +210,8 @@ public class ErronkaBisuala extends JFrame {
     // ==========================================================
 
     private void inizializatuPanelak() {
-        // 1. LOGIN PANELA
+        
+    	// 1. LOGIN PANELA
         LoginPanela = new JPanel();
         LoginPanela.setLayout(null); // *** ABSOLUTE LAYOUT ***
 
@@ -243,9 +288,43 @@ public class ErronkaBisuala extends JFrame {
         HasierakoPanela.add(taldeakIkusi);
         HasierakoPanela.add(jokalariakAldatu);
         
+     // 3. KLASIFIKAZIOA PANELA 
+        KlasifikazioaPanela = new JPanel();
+        KlasifikazioaPanela.setLayout(null);
+
+        JLabel titleKlasif = new JLabel("LIGAKO KLASIFIKAZIOA", JLabel.CENTER);
+        titleKlasif.setBounds(50, 20, 900, 30);
+        titleKlasif.setFont(titleFont);
+        KlasifikazioaPanela.add(titleKlasif);
+
+        // --- TAULAKO ATALAK ---
+        // Zutabeko Tituluak eta Modeloa
+        String[] zutabeakoTituluak = {"Posizioa", "Taldea", "P. Totalak", "Irabazi", "Galdu", "Aldeko Puntuak", "Aurkako Puntuak"};
+        modeloTabla = new DefaultTableModel(zutabeakoTituluak, 0); 
+        tablaKlasif = new JTable(modeloTabla);
+        
+        scrollTabla = new JScrollPane(tablaKlasif);
+        scrollTabla.setBounds(50, 80, 900, 400); 
+        KlasifikazioaPanela.add(scrollTabla);
+
+        // Botoiak
+        atzerantzKlasif = new JButton("Atzerantz");
+        atzerantzKlasif.setBounds(50, 520, 100, 30);
+        KlasifikazioaPanela.add(atzerantzKlasif);
+
+        ateraKlasif = new JButton("Atera");
+        ateraKlasif.setBounds(850, 520, 100, 30);
+        KlasifikazioaPanela.add(ateraKlasif);
+
+        // 4-6. Resto de Paneles (Usando tu método genérico)
+        EmaitzaPanela = panelBigarrenakSortu("EMAITZAK SARTZEKO PANELA");
+        TaldeakPanela = panelBigarrenakSortu("TALDEAK IKUSI PANELA");
+        JokalariakPanela = panelBigarrenakSortu("JOKALARIAK ALDATU PANELA");
+    
+        
         // 3-6. Bigarren Panelak (Botoien Helmuga)
         
-        KlasifikazioaPanela = panelBigarrenakSortu("KLASIFIKAZIOA PANELA");
+        
         EmaitzaPanela = panelBigarrenakSortu("EMAITZAK SARTZEKO PANELA");
         TaldeakPanela = panelBigarrenakSortu("TALDEAK IKUSI PANELA");
         JokalariakPanela = panelBigarrenakSortu("JOKALARIAK ALDATU PANELA");
@@ -358,6 +437,34 @@ public class ErronkaBisuala extends JFrame {
         }
     }
     
+    /*=============================
+	 Klasifikazioa Eguneratu Metodoa
+	 ==============================*/
+    private void eguneratuKlasifikazioa() {
+        // 1. Taula garbitu
+        modeloTabla.setRowCount(0);
+
+        // 2. Ordenatu (lehen bezala)
+        Metodoak.taldeakMasterList.sort((t1, t2) -> t2.getPuntuTotalak() - t1.getPuntuTotalak());
+
+        // 3. Bete taula for klasiko batekin
+        for (int i = 0; i < Metodoak.taldeakMasterList.size(); i++) {
+            // Taldea lortu i posizioaren arabera
+            Taldea t = (Taldea) Metodoak.taldeakMasterList.get(i);
+            
+            Object[] TaldeInfo = {
+                (i + 1),           // Ez azteko 0 posiziotik taula    
+                t.getIzena(),         
+                t.getPuntuTotalak(),   
+                t.getIrabazitakoak(),  
+                t.getGaldutakoak(),    
+                t.getPuntuakF(),       
+                t.getPuntuakC()        
+            };
+            
+            modeloTabla.addRow(TaldeInfo);
+        }
+    }
 
     // ==========================================================
     // 5. MAIN
