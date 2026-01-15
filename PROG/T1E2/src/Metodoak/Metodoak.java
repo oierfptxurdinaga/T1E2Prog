@@ -47,8 +47,9 @@ public class Metodoak {
 		}
 	}
 	
-	// --- MÉTODOS EXISTENTES (LOGIN) ---
 	
+	
+	// Kargatu erabiltzaileak listara
 	public static void kargatuErabiltzaileak() {
 		erabiltzaileaklist = new ArrayList<>();
 		erabiltzaileaklist.add(new Administradorea("Eder", "Bilbao", "12345678A", "ebilbao", "12345"));
@@ -57,6 +58,48 @@ public class Metodoak {
 		erabiltzaileaklist.add(new ErabiltzaileNormala("Aratz", "Barcena", "12345678D", "abarcena", "12345"));
 	}
 	
+	// --- Atera Metodoa ---
+	public static void atera() {
+		int respuesta = JOptionPane.CLOSED_OPTION; 
+
+    	// Bucle: se repite si el usuario cierra la ventana o presiona Cancel
+    	while (respuesta == JOptionPane.CLOSED_OPTION || respuesta == JOptionPane.CANCEL_OPTION) {
+    	    respuesta = JOptionPane.showConfirmDialog(
+    	            null,
+    	            "¿Atera baino lehen,gorde nahi duzu?",
+    	            "Berrespena",
+    	            JOptionPane.YES_NO_CANCEL_OPTION
+    	    );
+
+    	    if (respuesta == JOptionPane.CLOSED_OPTION) {
+    	        JOptionPane.showMessageDialog(
+    	                null,
+    	                "Aukeratu behar duzu bat",
+    	                "Atención",
+    	                JOptionPane.WARNING_MESSAGE
+    	        );
+    	    } else if (respuesta == JOptionPane.CANCEL_OPTION) {
+    	        // Solo cerramos el diálogo, el programa sigue en el bucle
+    	        System.out.println("Cancel aukeratua, programa jarraitzen du");
+    	        break; // si quieres que salga del bucle y siga el programa
+    	    }
+    	
+
+    	// Manejo de las opciones válidas
+    	if (respuesta == JOptionPane.YES_OPTION) {
+    	    Metodoak.gordeDatuak(); // Gorde aldaketak irten baino lehen
+    	    System.exit(0);          // Cierra todo
+    	} else if (respuesta == JOptionPane.NO_OPTION) {
+    	    System.exit(0);          // Cierra todo
+    	}
+
+    	// Si era Cancel, el programa sigue normalmente aquí
+    	System.out.println("Programa jarraitzen du Cancel aukeratu ondoren...");
+
+    }
+	};
+	
+	// --- Login Metodoa ---
 	public static String login(String erabiltzailea, String pasahitza) {
 		if (erabiltzaileaklist == null) {
 			kargatuErabiltzaileak();

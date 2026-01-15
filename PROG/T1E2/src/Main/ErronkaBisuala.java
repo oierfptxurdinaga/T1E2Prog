@@ -2,8 +2,9 @@ package Main;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-
 import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import E2.ErabiltzaileMota;
 import E2.Taldea;
@@ -11,87 +12,51 @@ import Metodoak.Metodoak;
 
 public class ErronkaBisuala extends JFrame {
 
-    // ==========================================================
-    // 1. Atrbutuak Ordenez Jarrita
-    // ==========================================================
-	
-    // Nabegazio Layouta eta Content Panel-a
+    // --- Atributuak ---
     private CardLayout cardLayout;
     private JPanel contentPanel;
-    private Font titleFont; // Barruko titulurako letra-tipoa
+    private Font titleFont;
 
-    // --- Bigarreneko Panelak ---
-    // (Ordenatuta nola agertuko diren)
-    private JPanel LoginPanela;
-    private JPanel HasierakoPanela;
-    private JPanel KlasifikazioaPanela;
-    private JPanel EmaitzaPanela;
-    private JPanel TaldeakPanela;
-    private JPanel JokalariakPanela;
-
-    // --- Osagaiak JPanel 1: LoginPanela ---
-    // JLabels (4)
-    private JLabel logoaImg1;
-    private JLabel erabiltzaileak;
-    private JLabel pasahitza;
-    // JTextFields (2)
+    // --- Panelen Osagaiak ---
+    private JPanel LoginPanela, HasierakoPanela, KlasifikazioaPanela, EmaitzaPanela, TaldeakPanela, JokalariakPanela;
+    
+    // Login
+    private JLabel logoaImg1, erabiltzaileak, pasahitza;
     private JTextField textErabiltzaile;
-    private JPasswordField textPasahitza; // JPasswordField pasahitzak
-    // JButton (1)
-    private JButton sartu;
-    private JButton atera1;
+    private JPasswordField textPasahitza;
+    private JButton sartu, atera1;
 
-    // --- Osagaiak JPanel 2: HasierakoPanela ---
-    // JLabels (4)
-    private JLabel logoaImg2;
-    private JLabel img1;
-    private JLabel img2;
-    // JButtons (6)
-    private JButton atzerantz;
-    private JButton atera2;
-    private JButton klasifikazioaIkusi;
-    private JButton sartuEmaitza;
-    private JButton taldeakIkusi;
-    private JButton jokalariakAldatu;
+    // Hasiera
+    private JLabel logoaImg2, img1, img2;
+    private JButton atzerantz, atera2, klasifikazioaIkusi, sartuEmaitza, taldeakIkusi, jokalariakAldatu;
 
- // --- Osagaiak JPanel 3: KlasifikazioaPanela ---
-    private JButton atzerantzKlasif;
-    private JButton ateraKlasif;
+    // Klasifikazioa
+    private JButton atzerantzKlasif, ateraKlasif;
     private JTable tablaKlasif;
     private DefaultTableModel modeloTabla;
     private JScrollPane scrollTabla;
 
-    // ==========================================================
-    // 2. Eraikitzailea
-    // ==========================================================
-
     public ErronkaBisuala() {
         // --- JFrame Konfigurazioa ---
         setTitle("Bizkaiko Saskibaloi Federazioa");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(1000, 700); // Tamaina handia 
+        setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE); // X-ari jaramon egiteko
+        setSize(1000, 700);
         setLocationRelativeTo(null);
-        
-        // Tituluan letra-tipoa definitzea
         titleFont = new Font("Verdana", Font.BOLD, 24);
 
-        // --- Konfigurazioa Content Panel (CardLayout) ---
+        // --- Datuak Kargatu ---
+        Metodoak.kargatuDatuak();
+
+        // --- Layout Konfigurazioa ---
         cardLayout = new CardLayout();
         contentPanel = new JPanel(cardLayout);
         setContentPane(contentPanel);
 
-     // ==========================================================
-        // 3. Panelen Inizializazioa eta Nabegazioa
-        // ==========================================================
-
-        // --- GEHITUTAKOA: Karga fitxategitik RAM-era ---
-        Metodoak.kargatuDatuak();
-
-        // 1. 6 Panelen Inizializazioa
+        // --- Panelak Inizializatu ---
         inizializatuPanelak();
-        konfiguratuOsagaiBisualak(); 
+        konfiguratuOsagaiBisualak();
 
-        // 2. Gehitu Panelak Content Panel-ean
+        // --- Gehitu Panelak ---
         contentPanel.add(LoginPanela, "Login");
         contentPanel.add(HasierakoPanela, "Hasiera");
         contentPanel.add(KlasifikazioaPanela, "Klasifikazioa");
@@ -99,376 +64,195 @@ public class ErronkaBisuala extends JFrame {
         contentPanel.add(TaldeakPanela, "Taldeak");
         contentPanel.add(JokalariakPanela, "Jokalariak");
 
-        // 3. Nabegazioa panelen artean eta botoien ekintzak
-        
-        // ===============================================
-        // -------------- LOGIN PANELA -------------------
-        // ===============================================
-        // --- GEHITUTAKOA: atera1 botoiaren logika ---
-        atera1.addActionListener(e -> {
-            int respuesta = JOptionPane.showConfirmDialog(null, "Ziur zaude programa itxi nahi duzula?", "Irten", JOptionPane.YES_NO_OPTION);
-            if (respuesta == JOptionPane.YES_OPTION) {
-                Metodoak.gordeDatuak(); // Gorde aldaketak irten baino lehen
-                System.exit(0);
-            }
-        });
+        // ==========================================================
+        // 3. Ekintzak (Listeners) - FUSIONADO
+        // ==========================================================
 
+        // --- LOGIN EKINTZAK ---
         sartu.addActionListener(e -> {
-            // 1. Erabiltzailearen sarrerak lortzen ditu
             String usernameInput = textErabiltzaile.getText();
             String passwordInput = new String(textPasahitza.getPassword());
-            
-            // 2. Sarrerak balidatu hutsik dauden
+
             if (usernameInput.trim().isEmpty() || passwordInput.trim().isEmpty()) {
                 JOptionPane.showMessageDialog(null, "Mesedez, bete eremu guztiak.", "Errorea", JOptionPane.ERROR_MESSAGE);
-                return; 
+                return;
             }
-            
-            // 3. Balidazioari deitu
-            String rola = Metodoak.login(usernameInput, passwordInput);
 
-            // 4. Zer aldatu behar den erabaki erabiltzailearen rolaren arabera
-            if (rola != null) { 
-                erakutsiPanelak(rola); 
+            String rola = Metodoak.login(usernameInput, passwordInput);
+            if (rola != null) {
+                textErabiltzaile.setText(null);
+                textPasahitza.setText(null);
+                erakutsiPanelak(rola);
                 cardLayout.show(contentPanel, "Hasiera");
             } else {
                 JOptionPane.showMessageDialog(null, "Erabiltzaile edo Pasahitz okerra", "Errorea", JOptionPane.ERROR_MESSAGE);
             }
         });
-        // ==========================================================
-        // -------------- HASIERAKO PANELA --------------------------
-        // ==========================================================
+
+        atera1.addActionListener(e -> Metodoak.atera());
+
+        // --- HASIERA EKINTZAK ---
         atzerantz.addActionListener(e -> cardLayout.show(contentPanel, "Login"));
-        
-        // --- atera2 botoiak ere fitxategia eguneratu dezan ---
-        atera2.addActionListener(e -> {
-            
-            int respuesta = JOptionPane.showConfirmDialog(
-                null, 
-                "Ziur zaude programa itxi nahi duzula?", 
-                "Irten", 
-                JOptionPane.YES_NO_OPTION
-            );
+        atera2.addActionListener(e -> Metodoak.atera());
 
-            if (respuesta == JOptionPane.YES_OPTION) {
-                // Gorde aldaketak irten baino lehen
-                Metodoak.gordeDatuak();
-                System.exit(0);
-            }
+        klasifikazioaIkusi.addActionListener(e -> {
+            eguneratuKlasifikazioa();
+            cardLayout.show(contentPanel, "Klasifikazioa");
         });
-        
-     // ==========================================================
-     // -------------- KLASIFIKAZIOA PANELA ---------------------
-     // ==========================================================
 
-     klasifikazioaIkusi.addActionListener(e -> {
-         // 1. Cargamos los datos de la lista maestra a la tabla antes de entrar
-         eguneratuKlasifikazioa(); 
-         
-         // 2. Mostramos el panel
-         cardLayout.show(contentPanel, "Klasifikazioa");
-     });
-
-     // No olvides los botones de navegación de DENTRO del panel Klasifikazioa
-     atzerantzKlasif.addActionListener(e -> cardLayout.show(contentPanel, "Hasiera"));
-     ateraKlasif.addActionListener(e -> {
-    	    int respuesta = JOptionPane.showConfirmDialog(
-    	        null, 
-    	        "Ziur zaude programa itxi nahi duzula?", 
-    	        "Irten", 
-    	        JOptionPane.YES_NO_OPTION
-    	    );
-
-    	    if (respuesta == JOptionPane.YES_OPTION) {
-    	        // Gorde aldaketak irten baino lehen
-    	        Metodoak.gordeDatuak();
-    	        System.exit(0);
-    	    }
-    	});
-        
-        
-        // Botoiak De momento Panelerako
         sartuEmaitza.addActionListener(e -> cardLayout.show(contentPanel, "Emaitzak"));
         taldeakIkusi.addActionListener(e -> cardLayout.show(contentPanel, "Taldeak"));
         jokalariakAldatu.addActionListener(e -> cardLayout.show(contentPanel, "Jokalariak"));
-        
-        // --- GEHITUTAKOA: Leihoaren "X" botoiarentzat segurtasuna ---
-        this.addWindowListener(new java.awt.event.WindowAdapter() {
+
+        // --- KLASIFIKAZIOA EKINTZAK ---
+        atzerantzKlasif.addActionListener(e -> cardLayout.show(contentPanel, "Hasiera"));
+        ateraKlasif.addActionListener(e -> Metodoak.atera());
+
+        // Leihoaren "X" botoia
+        this.addWindowListener(new WindowAdapter() {
             @Override
-            public void windowClosing(java.awt.event.WindowEvent e) {
-                Metodoak.gordeDatuak();
+            public void windowClosing(WindowEvent e) {
+                Metodoak.atera();
             }
         });
 
-        // Lehnen panel gisa LoginPanela erakutsi
         cardLayout.show(contentPanel, "Login");
         setVisible(true);
     }
 
-    // ==========================================================
-    // 5. Metodoen Inizializazioa
-    // ==========================================================
-
     private void inizializatuPanelak() {
-        
-    	// 1. LOGIN PANELA
-        LoginPanela = new JPanel();
-        LoginPanela.setLayout(null); // *** ABSOLUTE LAYOUT ***
-
-        // Títulua (Estiloa iturria Verdana 24)
+        // --- LOGIN PANELA ---
+        LoginPanela = new JPanel(null);
         JLabel titleLogin = new JLabel(getTitle(), JLabel.CENTER);
         titleLogin.setFont(titleFont);
         titleLogin.setBounds(38, 20, 900, 30);
-        LoginPanela.add(titleLogin);
-
-        // Login Panelaren osagaiak inizializatzea
-        logoaImg1 = new JLabel("LOGOA IMAGEN", JLabel.CENTER);
-        erabiltzaileak = new JLabel("Erabiltzailea:", JLabel.RIGHT);
-        pasahitza = new JLabel("Pasahitza:", JLabel.RIGHT);
-        textErabiltzaile = new JTextField(15);
-        textPasahitza = new JPasswordField(15);
-        sartu = new JButton("Sartu");
-        atera1 = new JButton("Atera");
-
-        // Kokapena eta tamaina setBounds erabiliz
-        logoaImg1.setBounds(420, 92, 200, 150);
-        erabiltzaileak.setBounds(250, 300, 150, 30);
-        textErabiltzaile.setBounds(420, 300, 250, 30);
-        pasahitza.setBounds(250, 350, 150, 30);
-        textPasahitza.setBounds(420, 350, 250, 30);
-        sartu.setBounds(483, 447, 100, 30);
-        atera1.setBounds(858, 60, 80, 30);
-        // Gehitu osagaiak panelera
-        LoginPanela.add(logoaImg1);
-        LoginPanela.add(erabiltzaileak);
-        LoginPanela.add(pasahitza);
-        LoginPanela.add(textErabiltzaile);
-        LoginPanela.add(textPasahitza);
-        LoginPanela.add(sartu);
-        LoginPanela.add(atera1);
         
-        // 2. HASIERAKO PANELA
-        HasierakoPanela = new JPanel();
-        HasierakoPanela.setLayout(null);
+        logoaImg1 = new JLabel("LOGOA IMAGEN", JLabel.CENTER);
+        logoaImg1.setBounds(420, 92, 200, 150);
+        
+        erabiltzaileak = new JLabel("Erabiltzailea:", JLabel.RIGHT);
+        erabiltzaileak.setBounds(250, 300, 150, 30);
+        textErabiltzaile = new JTextField();
+        textErabiltzaile.setBounds(420, 300, 250, 30);
+        
+        pasahitza = new JLabel("Pasahitza:", JLabel.RIGHT);
+        pasahitza.setBounds(250, 350, 150, 30);
+        textPasahitza = new JPasswordField();
+        textPasahitza.setBounds(420, 350, 250, 30);
+        
+        sartu = new JButton("Sartu");
+        sartu.setBounds(483, 447, 100, 30);
+        this.getRootPane().setDefaultButton(sartu);
+        
+        atera1 = new JButton("Atera");
+        atera1.setBounds(858, 60, 80, 30);
 
-        // Barruko titulua
+        LoginPanela.add(titleLogin); LoginPanela.add(logoaImg1); LoginPanela.add(erabiltzaileak);
+        LoginPanela.add(textErabiltzaile); LoginPanela.add(pasahitza); LoginPanela.add(textPasahitza);
+        LoginPanela.add(sartu); LoginPanela.add(atera1);
+
+        // --- HASIERA PANELA ---
+        HasierakoPanela = new JPanel(null);
         JLabel titleHasiera = new JLabel("HASIERA PANELA", JLabel.CENTER);
         titleHasiera.setBounds(50, 20, 900, 30);
         titleHasiera.setFont(titleFont);
-        HasierakoPanela.add(titleHasiera);
-
-        // Hasierako Panelaren osagaiak inizializatzea
-        logoaImg2 = new JLabel("Logoa", JLabel.CENTER);
-        logoaImg2.setBounds(394, 60, 240, 211);
-        img1 = new JLabel("Img1", JLabel.CENTER);
-        img1.setBounds(100, 250, 350, 200);
-        img2 = new JLabel("Img2", JLabel.CENTER);
-        img2.setBounds(550, 250, 350, 200);
-        atzerantz = new JButton("Atzerantz");
-        atzerantz.setBounds(800, 50, 100, 30);
-        atera2 = new JButton("Atera");
-        atera2.setBounds(910, 50, 70, 30);
-        klasifikazioaIkusi = new JButton("Klasifikazioa ikusi");
-        klasifikazioaIkusi.setBounds(150, 480, 250, 40);
-        sartuEmaitza = new JButton("Sartu Emaitza");
-        sartuEmaitza.setBounds(600, 480, 250, 40);
-        taldeakIkusi = new JButton("Taldeak ikusi");
-        taldeakIkusi.setBounds(150, 530, 250, 40);
-        jokalariakAldatu = new JButton("Jokalariak Aldatu");
-        jokalariakAldatu.setBounds(600, 530, 250, 40);
-
-        // Gehitu osagaiak panelera
-        HasierakoPanela.add(logoaImg2);
-        HasierakoPanela.add(img1);
-        HasierakoPanela.add(img2);
-        HasierakoPanela.add(atzerantz);
-        HasierakoPanela.add(atera2);
-        HasierakoPanela.add(klasifikazioaIkusi);
-        HasierakoPanela.add(sartuEmaitza);
-        HasierakoPanela.add(taldeakIkusi);
-        HasierakoPanela.add(jokalariakAldatu);
         
-     // 3. KLASIFIKAZIOA PANELA 
-        KlasifikazioaPanela = new JPanel();
-        KlasifikazioaPanela.setLayout(null);
+        logoaImg2 = new JLabel(); logoaImg2.setBounds(394, 60, 240, 211);
+        img1 = new JLabel(); img1.setBounds(100, 250, 350, 200);
+        img2 = new JLabel(); img2.setBounds(550, 250, 350, 200);
+        
+        atzerantz = new JButton("Atzerantz"); atzerantz.setBounds(800, 50, 100, 30);
+        atera2 = new JButton("Atera"); atera2.setBounds(910, 50, 70, 30);
+        
+        klasifikazioaIkusi = new JButton("Klasifikazioa ikusi"); klasifikazioaIkusi.setBounds(150, 480, 250, 40);
+        sartuEmaitza = new JButton("Sartu Emaitza"); sartuEmaitza.setBounds(600, 480, 250, 40);
+        taldeakIkusi = new JButton("Taldeak ikusi"); taldeakIkusi.setBounds(150, 530, 250, 40);
+        jokalariakAldatu = new JButton("Jokalariak Aldatu"); jokalariakAldatu.setBounds(600, 530, 250, 40);
 
+        HasierakoPanela.add(titleHasiera); HasierakoPanela.add(logoaImg2); HasierakoPanela.add(img1);
+        HasierakoPanela.add(img2); HasierakoPanela.add(atzerantz); HasierakoPanela.add(atera2);
+        HasierakoPanela.add(klasifikazioaIkusi); HasierakoPanela.add(sartuEmaitza);
+        HasierakoPanela.add(taldeakIkusi); HasierakoPanela.add(jokalariakAldatu);
+
+        // --- KLASIFIKAZIOA PANELA (Corregido) ---
+        KlasifikazioaPanela = new JPanel(null);
         JLabel titleKlasif = new JLabel("LIGAKO KLASIFIKAZIOA", JLabel.CENTER);
         titleKlasif.setBounds(50, 20, 900, 30);
         titleKlasif.setFont(titleFont);
-        KlasifikazioaPanela.add(titleKlasif);
 
-        // --- TAULAKO ATALAK ---
-        // Zutabeko Tituluak eta Modeloa
-        String[] zutabeakoTituluak = {"Posizioa", "Taldea", "P. Totalak", "Irabazi", "Galdu", "Aldeko Puntuak", "Aurkako Puntuak"};
-        modeloTabla = new DefaultTableModel(zutabeakoTituluak, 0); 
+        String[] zutabeTituluak = {"Taldea", "P. Totalak", "Irabazi", "Galdu", "Aldeko", "Aurkako"};
+        modeloTabla = new DefaultTableModel(zutabeTituluak, 0);
         tablaKlasif = new JTable(modeloTabla);
-        
         scrollTabla = new JScrollPane(tablaKlasif);
-        scrollTabla.setBounds(50, 80, 900, 400); 
-        KlasifikazioaPanela.add(scrollTabla);
+        scrollTabla.setBounds(50, 80, 900, 400);
 
-        // Botoiak
-        atzerantzKlasif = new JButton("Atzerantz");
-        atzerantzKlasif.setBounds(50, 520, 100, 30);
-        KlasifikazioaPanela.add(atzerantzKlasif);
+        atzerantzKlasif = new JButton("Atzerantz"); atzerantzKlasif.setBounds(50, 520, 100, 30);
+        ateraKlasif = new JButton("Atera"); ateraKlasif.setBounds(850, 520, 100, 30);
 
-        ateraKlasif = new JButton("Atera");
-        ateraKlasif.setBounds(850, 520, 100, 30);
-        KlasifikazioaPanela.add(ateraKlasif);
+        KlasifikazioaPanela.add(titleKlasif); KlasifikazioaPanela.add(scrollTabla);
+        KlasifikazioaPanela.add(atzerantzKlasif); KlasifikazioaPanela.add(ateraKlasif);
 
-        // 4-6. Resto de Paneles (Usando tu método genérico)
-        EmaitzaPanela = panelBigarrenakSortu("EMAITZAK SARTZEKO PANELA");
-        TaldeakPanela = panelBigarrenakSortu("TALDEAK IKUSI PANELA");
-        JokalariakPanela = panelBigarrenakSortu("JOKALARIAK ALDATU PANELA");
-    
-        
-        // 3-6. Bigarren Panelak (Botoien Helmuga)
-        
-        
+        // Otros paneles
         EmaitzaPanela = panelBigarrenakSortu("EMAITZAK SARTZEKO PANELA");
         TaldeakPanela = panelBigarrenakSortu("TALDEAK IKUSI PANELA");
         JokalariakPanela = panelBigarrenakSortu("JOKALARIAK ALDATU PANELA");
     }
-    /**
-     * Konfiguratu irudiak eta beste elementu bisualak
-     */
-    	private void konfiguratuOsagaiBisualak() {
-    	    
-    	    // 1. Logoa Nagusiaren Karga (Logoa.png)
-    	    // Tamaina: 200x150
-    	    kargatuIrudia(logoaImg1, 200, 150, "/Multimedia/logoa.png"); 
-    	 
-    	    // 1.2 Logoa Nagusiaren Karga (Logoa.png)
-    	    // Tamaina: 200x150
-    	    kargatuIrudia(logoaImg2, 200, 150, "/Multimedia/logoa.png"); 
-    	    
-    	    // 2. Albistearen Irudia 1 (img1.png)
-    	    // Tamaina: 350x200
-    	    kargatuIrudia(img1, 150, 150, "/Multimedia/img1.png"); 
-    	    
-    	    // 3. Albistearen Irudia 2 (img2.png)
-    	    // Tamaina: 350x200
-    	    kargatuIrudia(img2, 150, 150, "/Multimedia/img2.png"); 
-    	    
 
-    	}
-    	private void kargatuIrudia(JLabel label, int width, int height, String path) {
-    	    try {
-    	        // Erabilita ErronkaBisuala.class Class Loader-a lortzeko
-    	        java.net.URL imgURL = ErronkaBisuala.class.getResource(path);
-
-    	        if (imgURL != null) {
-    	            ImageIcon originalIcon = new ImageIcon(imgURL);
-
-    	            // Redimensionatu (Redimensionar)
-    	            Image originalImage = originalIcon.getImage();
-    	            Image resizedImage = originalImage.getScaledInstance(width, height, Image.SCALE_SMOOTH); 
-    	            ImageIcon resizedIcon = new ImageIcon(resizedImage);
-    	            
-    	            // Asignatu irudia
-    	            label.setIcon(resizedIcon);
-    	            label.setText(""); // Testua ezabatu irudia daukanean
-    	        } else {
-    	            // Akatsen kudeaketa
-    	            label.setIcon(null); // Quitar cualquier icono anterior
-    	            label.setText("ERROR: Irudia ez da aurkitu: " + path); 
-    	            System.err.println("Ezin izan da irudia kargatu: " + path);
-    	        }
-    	    } catch (Exception e) {
-    	        e.printStackTrace();
-    	        label.setIcon(null);
-    	        label.setText("Irudi Karga Akatsa");
-    	    }
-    	}
-    /**
-     * Metodo bat panel sekundarioak sortzeko
-     */
-    private JPanel panelBigarrenakSortu(String titulo) {
-        JPanel panel = new JPanel();
-        panel.setLayout(null); // *** ABSOLUTE LAYOUT ***
-
-        JLabel titleLabel = new JLabel(titulo, JLabel.CENTER);
-        titleLabel.setFont(titleFont);
-        
-        // Kokapena eta tamaina
-        titleLabel.setBounds(50, 20, 900, 30); 
-        panel.add(titleLabel);
-        
-        // Botoia Hasierako Panela-ra itzultzeko
-        JButton backButton = new JButton("Volver a Inicio");
-        backButton.setBounds(50, 50, 150, 30);
-        backButton.addActionListener(e -> cardLayout.show(contentPanel, "Hasiera"));
-        panel.add(backButton);
-        
-        return panel;
-    }
-    
-    /*==============
-     Login Metodoa
-	 ===============*/
-     
-    private void erakutsiPanelak(String rola) {
-        
-        // 1. Botoiak desgaitu lehenik
-        klasifikazioaIkusi.setVisible(false);
-        sartuEmaitza.setVisible(false);
-        taldeakIkusi.setVisible(false);
-        jokalariakAldatu.setVisible(false);
-        
-        // 2. Rolaren Arabera Botoiak Aktibatu
-        switch (rola) {
-            case "Admin":
-                // Administradoreak ser ikus dezake eta aldatu.
-                klasifikazioaIkusi.setVisible(true);
-                sartuEmaitza.setVisible(true);
-                taldeakIkusi.setVisible(true);
-                break;
-            case "Presidentea":
-                // Presidentea ser ikus dezake eta aldatu.
-                klasifikazioaIkusi.setVisible(true);
-                taldeakIkusi.setVisible(true);
-                jokalariakAldatu.setVisible(true);
-                break;
-            case "Arrunta":
-                // Arrunta ser ikus dezake.
-                klasifikazioaIkusi.setVisible(true);
-                taldeakIkusi.setVisible(true);
-                break;
-        }
-    }
-    
-    /*=============================
-	 Klasifikazioa Eguneratu Metodoa
-	 ==============================*/
     private void eguneratuKlasifikazioa() {
-        // 1. Taula garbitu
         modeloTabla.setRowCount(0);
-
-        // 2. Ordenatu (lehen bezala)
         Metodoak.taldeakMasterList.sort((t1, t2) -> t2.getPuntuTotalak() - t1.getPuntuTotalak());
 
-        // 3. Bete taula for klasiko batekin
         for (int i = 0; i < Metodoak.taldeakMasterList.size(); i++) {
-            // Taldea lortu i posizioaren arabera
             Taldea t = (Taldea) Metodoak.taldeakMasterList.get(i);
-            
+            // ORDEN CORREGIDO SEGUN TU IMAGEN:
             Object[] TaldeInfo = {
-                (i + 1),           // Ez azteko 0 posiziotik taula    
-                t.getIzena(),         
-                t.getPuntuTotalak(),   
-                t.getIrabazitakoak(),  
-                t.getGaldutakoak(),    
-                t.getPuntuakF(),       
-                t.getPuntuakC()        
+                t.getIzena(),         // 1. Columna: Taldea
+                t.getPuntuTotalak(),  // 2. Columna: P. Totalak
+                t.getIrabazitakoak(), // 3. Columna: Irabazi
+                t.getGaldutakoak(),   // 4. Columna: Galdu
+                t.getPuntuakF(),      // 5. Columna: Aldeko
+                t.getPuntuakC()       // 6. Columna: Aurkako
             };
-            
             modeloTabla.addRow(TaldeInfo);
         }
     }
 
-    // ==========================================================
-    // 5. MAIN
-    // ==========================================================
+    // --- Metodos Auxiliares ---
+    private void erakutsiPanelak(String rola) {
+        klasifikazioaIkusi.setVisible(true);
+        taldeakIkusi.setVisible(true);
+        sartuEmaitza.setVisible(rola.equals("Admin"));
+        jokalariakAldatu.setVisible(rola.equals("Presidentea"));
+    }
+
+    private JPanel panelBigarrenakSortu(String titulo) {
+        JPanel panel = new JPanel(null);
+        JLabel lbl = new JLabel(titulo, JLabel.CENTER);
+        lbl.setFont(titleFont); lbl.setBounds(50, 20, 900, 30);
+        JButton btn = new JButton("Volver a Inicio");
+        btn.setBounds(50, 50, 150, 30);
+        btn.addActionListener(e -> cardLayout.show(contentPanel, "Hasiera"));
+        panel.add(lbl); panel.add(btn);
+        return panel;
+    }
+
+    private void konfiguratuOsagaiBisualak() {
+        kargatuIrudia(logoaImg1, 200, 150, "/Multimedia/logoa.png");
+        kargatuIrudia(logoaImg2, 200, 150, "/Multimedia/logoa.png");
+        kargatuIrudia(img1, 150, 150, "/Multimedia/img1.png");
+        kargatuIrudia(img2, 150, 150, "/Multimedia/img2.png");
+    }
+
+    private void kargatuIrudia(JLabel label, int w, int h, String path) {
+        try {
+            java.net.URL url = getClass().getResource(path);
+            if (url != null) {
+                Image img = new ImageIcon(url).getImage().getScaledInstance(w, h, Image.SCALE_SMOOTH);
+                label.setIcon(new ImageIcon(img));
+                label.setText("");
+            }
+        } catch (Exception e) { label.setText("Error Imagen"); }
+    }
 
     public static void main(String[] args) {
         EventQueue.invokeLater(() -> new ErronkaBisuala());
