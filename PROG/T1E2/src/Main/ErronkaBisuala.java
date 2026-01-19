@@ -35,11 +35,19 @@ public class ErronkaBisuala extends JFrame {
     private JTable tablaKlasif;
     private DefaultTableModel modeloTabla;
     private JScrollPane scrollTabla;
-
+    
+    // Emaitza
+    private JTable tablaEmaitzak;
+    private DefaultTableModel modeloEmaitzak;
+    private JButton atzerantzEmaitza; 
+    private JButton ateraEmaitza; 
+    private JButton gordeEmaitza;
+    
+    
     public ErronkaBisuala() {
         // --- JFrame Konfigurazioa ---
         setTitle("Bizkaiko Saskibaloi Federazioa");
-        setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE); // X-ari jaramon egiteko
+        setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE); 
         setSize(1000, 700);
         setLocationRelativeTo(null);
         titleFont = new Font("Verdana", Font.BOLD, 24);
@@ -107,6 +115,17 @@ public class ErronkaBisuala extends JFrame {
         // --- KLASIFIKAZIOA EKINTZAK ---
         atzerantzKlasif.addActionListener(e -> cardLayout.show(contentPanel, "Hasiera"));
         ateraKlasif.addActionListener(e -> Metodoak.atera());
+        
+     // --- EMAITZA EKINTZAK ---
+        sartuEmaitza.addActionListener(e -> {
+            generatuJornadak(); // Sortu Jornadak behar bada
+            cardLayout.show(contentPanel, "Emaitzak");
+        });
+
+        atzerantzEmaitza.addActionListener(e -> cardLayout.show(contentPanel, "Hasiera"));
+        ateraEmaitza.addActionListener(e -> Metodoak.atera()); // Llama al método atera de Metodoak
+        gordeEmaitza.addActionListener(e -> prozesatuEmaitzak());
+        
 
         // Leihoaren "X" botoia
         this.addWindowListener(new WindowAdapter() {
@@ -174,7 +193,7 @@ public class ErronkaBisuala extends JFrame {
         HasierakoPanela.add(klasifikazioaIkusi); HasierakoPanela.add(sartuEmaitza);
         HasierakoPanela.add(taldeakIkusi); HasierakoPanela.add(jokalariakAldatu);
 
-        // --- KLASIFIKAZIOA PANELA (Corregido) ---
+        // --- KLASIFIKAZIOA PANELA  ---
         KlasifikazioaPanela = new JPanel(null);
         JLabel titleKlasif = new JLabel("LIGAKO KLASIFIKAZIOA", JLabel.CENTER);
         titleKlasif.setBounds(50, 20, 900, 30);
@@ -191,33 +210,254 @@ public class ErronkaBisuala extends JFrame {
 
         KlasifikazioaPanela.add(titleKlasif); KlasifikazioaPanela.add(scrollTabla);
         KlasifikazioaPanela.add(atzerantzKlasif); KlasifikazioaPanela.add(ateraKlasif);
+        
+        // --- EMAITZA PANELA ---
+     
+        EmaitzaPanela = new JPanel(null);
+        JLabel titleEmaitza = new JLabel("LIGAKO EMAITZAK (10 JORNADA)", JLabel.CENTER);
+        titleEmaitza.setBounds(50, 20, 900, 30);
+        titleEmaitza.setFont(titleFont);
 
-        // Otros paneles
-        EmaitzaPanela = panelBigarrenakSortu("EMAITZAK SARTZEKO PANELA");
+     
+        modeloEmaitzak = new DefaultTableModel(new String[]{"Jornada / Partidua", "Puntuak", "vs", "Puntuak", "Kanpoko Taldea"}, 0) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                // 1. Bakarrik editatu 1 y 3 (puntuak)
+                if (column != 1 && column != 3) return false;
+
+                // 2. Ezin da editatu "JORNADA" edo "Jaurdunaldia" lerroak
+                Object val = getValueAt(row, 0);
+                if (val != null && (val.toString().startsWith("JORNADA") || val.toString().startsWith("Jaurdunaldia"))) {
+                    return false;
+                }
+                
+                return true;
+            }
+        };
+
+        tablaEmaitzak = new JTable(modeloEmaitzak);
+        JScrollPane scrollEmaitzak = new JScrollPane(tablaEmaitzak);
+        scrollEmaitzak.setBounds(50, 80, 900, 400);
+
+        atzerantzEmaitza = new JButton("Atzerantz"); 
+        atzerantzEmaitza.setBounds(50, 520, 100, 30);
+
+        gordeEmaitza = new JButton("Gorde Emaitzak");
+        gordeEmaitza.setBounds(400, 520, 200, 30);
+
+        ateraEmaitza = new JButton("Atera"); 
+        ateraEmaitza.setBounds(850, 520, 100, 30);
+
+        EmaitzaPanela.add(titleEmaitza);
+        EmaitzaPanela.add(scrollEmaitzak);
+        EmaitzaPanela.add(atzerantzEmaitza);
+        EmaitzaPanela.add(gordeEmaitza);
+        EmaitzaPanela.add(ateraEmaitza);
+        
+        // Beste panelak (Taldeak eta Jokalariak) - Panelak sortu besterik ez dago
         TaldeakPanela = panelBigarrenakSortu("TALDEAK IKUSI PANELA");
         JokalariakPanela = panelBigarrenakSortu("JOKALARIAK ALDATU PANELA");
     }
 
+    // --- Klasifikazioa Eguneratu  ---
+    
     private void eguneratuKlasifikazioa() {
-        modeloTabla.setRowCount(0);
-        Metodoak.taldeakMasterList.sort((t1, t2) -> t2.getPuntuTotalak() - t1.getPuntuTotalak());
+        // 1. Datuak berrezarri gehitu aurretik, bikoiztuak saihesteko
+        for (Taldea t : Metodoak.taldeakMasterList) {
+            t.setPuntuTotalak(0);
+            t.setIrabazitakoak(0);
+            t.setGaldutakoak(0);
+            t.setPuntuakF(0);
+            t.setPuntuakC(0);
+        }
 
-        for (int i = 0; i < Metodoak.taldeakMasterList.size(); i++) {
-            Taldea t = (Taldea) Metodoak.taldeakMasterList.get(i);
-            // ORDEN CORREGIDO SEGUN TU IMAGEN:
-            Object[] TaldeInfo = {
-                t.getIzena(),         // 1. Columna: Taldea
-                t.getPuntuTotalak(),  // 2. Columna: P. Totalak
-                t.getIrabazitakoak(), // 3. Columna: Irabazi
-                t.getGaldutakoak(),   // 4. Columna: Galdu
-                t.getPuntuakF(),      // 5. Columna: Aldeko
-                t.getPuntuakC()       // 6. Columna: Aurkako
+        // 2. Irakurri emaitzak eta kalkulatu puntuazioa
+        for (int i = 0; i < modeloEmaitzak.getRowCount(); i++) {
+            Object locNameObj = modeloEmaitzak.getValueAt(i, 0);
+            
+            // Saltatu errenkada nulua bada edo egun-bereizlea bada
+            if (locNameObj == null) continue;
+            String locName = locNameObj.toString();
+            if (locName.startsWith("JORNADA") || locName.startsWith("Jaurdunaldia")) continue;
+
+            // Balioztatu puntudun gelaxkak hutsik badaude 
+            Object valL = modeloEmaitzak.getValueAt(i, 1);
+            Object valV = modeloEmaitzak.getValueAt(i, 3);
+
+            // Puntu-gelaxkaren bat hutsik badago, partida hau saltatzen dugu (ez da jokatu).
+            if (valL == null || valL.toString().trim().isEmpty() || 
+                valV == null || valV.toString().trim().isEmpty()) {
+                continue;
+            }
+
+            int pL = Integer.parseInt(valL.toString().trim());
+            int pV = Integer.parseInt(valV.toString().trim());
+            String visName = (String) modeloEmaitzak.getValueAt(i, 4);
+
+            // Emaitza zehazki 0-0 bada, saltatu.
+            if (pL == 0 && pV == 0) continue;
+
+            Taldea tL = null, tV = null;
+            for (Taldea t : Metodoak.taldeakMasterList) {
+                if (t.getIzena().equals(locName)) tL = t;
+                if (t.getIzena().equals(visName)) tV = t;
+            }
+
+            if (tL != null && tV != null) {
+            	// Alde onak eta txarrak eguneratu
+                tL.setPuntuakF(tL.getPuntuakF() + pL);
+                tL.setPuntuakC(tL.getPuntuakC() + pV);
+                
+                tV.setPuntuakF(tV.getPuntuakF() + pV);
+                tV.setPuntuakC(tV.getPuntuakC() + pL);
+
+                // Irabazleak 2 puntu, galtzaileak 1 puntu
+                if (pL > pV) {
+                    tL.setPuntuTotalak(tL.getPuntuTotalak() + 2); 
+                    tL.setIrabazitakoak(tL.getIrabazitakoak() + 1);
+                    tV.setPuntuTotalak(tV.getPuntuTotalak() + 1); 
+                    tV.setGaldutakoak(tV.getGaldutakoak() + 1);
+                } else {
+                    tV.setPuntuTotalak(tV.getPuntuTotalak() + 2); 
+                    tV.setIrabazitakoak(tV.getIrabazitakoak() + 1);
+                    tL.setPuntuTotalak(tL.getPuntuTotalak() + 1); 
+                    tL.setGaldutakoak(tL.getGaldutakoak() + 1);
+                }
+            }
+        }
+
+        // 3. Ordenatu zerrenda (Beherapen puntuak, gero Batez besteko beherapena)
+        Metodoak.taldeakMasterList.sort((t1, t2) -> {
+            int diff = Integer.compare(t2.getPuntuTotalak(), t1.getPuntuTotalak());
+            if (diff != 0) return diff;
+            
+            int avg1 = t1.getPuntuakF() - t1.getPuntuakC();
+            int avg2 = t2.getPuntuakF() - t2.getPuntuakC();
+            return Integer.compare(avg2, avg1);
+        });
+
+        // 4. Eguneratu taula bisuala
+        modeloTabla.setRowCount(0);
+        for (Taldea t : Metodoak.taldeakMasterList) {
+            Object[] fila = {
+                t.getIzena(), 
+                t.getPuntuTotalak(), 
+                t.getIrabazitakoak(), 
+                t.getGaldutakoak(), 
+                t.getPuntuakF(), 
+                t.getPuntuakC()
             };
-            modeloTabla.addRow(TaldeInfo);
+            modeloTabla.addRow(fila);
         }
     }
+    
+    // --- Emaitzak Prozesatu (Emaitza Paneala) ---
+    
+    private void generatuJornadak() {
+        if (modeloEmaitzak.getRowCount() > 0) return; // Ez duplikatu baldin badaude 
 
-    // --- Metodos Auxiliares ---
+        // 1. Sortu taldeen kopia ausazko ordenean
+        ArrayList<Taldea> kopia = new ArrayList<>(Metodoak.taldeakMasterList); //
+        java.util.Collections.shuffle(kopia);
+
+        // 2. Sortu Jornadak 1-5 (joana)
+        // 1vs6, 2vs5, 3vs4
+        for (int j = 1; j <= 5; j++) {
+            modeloEmaitzak.addRow(new Object[]{"Jaurdunaldia " + j, "", "", "", ""});
+            modeloEmaitzak.addRow(new Object[]{kopia.get(0).getIzena(), 0, "vs", 0, kopia.get(5).getIzena()});
+            modeloEmaitzak.addRow(new Object[]{kopia.get(1).getIzena(), 0, "vs", 0, kopia.get(4).getIzena()});
+            modeloEmaitzak.addRow(new Object[]{kopia.get(2).getIzena(), 0, "vs", 0, kopia.get(3).getIzena()});
+            
+            // Ez jolasteko bi aldiz berdin
+            // Mugitzen dugu azken taldea lehen postura, 0 beti izango da finko
+            Taldea last = kopia.remove(5);
+            kopia.add(1, last);
+        }
+
+        // 3. Sortu Jornadak 6-10 (etorria)
+        // Sortutako partiduak joanekoen alderantziz
+        int jornadaerrenkada = 4; // Titulua + 3 partiduak
+        for (int j = 0; j < 5; j++) {
+            modeloEmaitzak.addRow(new Object[]{"JORNADA " + (j + 6), "", "", "", ""});
+            for (int p = 1; p <= 3; p++) {
+                int filaOriginal = (j * jornadaerrenkada) + p;
+                String local = (String) modeloEmaitzak.getValueAt(filaOriginal, 0);
+                String visitante = (String) modeloEmaitzak.getValueAt(filaOriginal, 4);
+                // Añadimos la vuelta invertida
+                modeloEmaitzak.addRow(new Object[]{visitante, 0, "vs", 0, local});
+            }
+        }
+    }
+    
+    // Partidu bat gehitu (laguntzailea)
+    
+    private void gehituPartidua(Taldea t1, Taldea t2) {
+        modeloEmaitzak.addRow(new Object[]{t1.getIzena(), 0, "vs", 0, t2.getIzena()});
+    }
+
+    private void prozesatuEmaitzak() {
+        // Erabiltzaileak une honetan idazten ari dena gordetzera behartzen dugu sistema.
+        if (tablaEmaitzak.isEditing()) {
+            tablaEmaitzak.getCellEditor().stopCellEditing();
+        }
+
+        try {
+            for (int i = 0; i < modeloEmaitzak.getRowCount(); i++) {
+                Object col0Obj = modeloEmaitzak.getValueAt(i, 0);
+                if (col0Obj == null) continue;
+                
+                String col0 = col0Obj.toString();
+                if (col0.startsWith("Jaurdunaldia") || col0.startsWith("JORNADA")) continue;
+
+                // 1. Lortu balioak zeluletatik
+                Object valL = modeloEmaitzak.getValueAt(i, 1);
+                Object valV = modeloEmaitzak.getValueAt(i, 3);
+
+                // Biak hutsik badaude, partida hau saltatzen dugu
+                if ((valL == null || valL.toString().trim().isEmpty()) && 
+                    (valV == null || valV.toString().trim().isEmpty())) {
+                    continue; 
+                }
+
+                // 2. Bakarra hutsik badago, jakinaraziko dizugu.
+                if (valL == null || valL.toString().trim().isEmpty() || 
+                    valV == null || valV.toString().trim().isEmpty()) {
+                    JOptionPane.showMessageDialog(this, "Aviso: El partido '" + col0 + "' tiene un marcador incompleto.");
+                    return;
+                }
+
+                // 3. Zenbakiak diren egiaztatu
+                int pLocal, pVisit;
+                try {
+                    pLocal = Integer.parseInt(valL.toString().trim());
+                    pVisit = Integer.parseInt(valV.toString().trim());
+                } catch (NumberFormatException e) {
+                    JOptionPane.showMessageDialog(this, "Error: Solo números en '" + col0 + "'");
+                    return;
+                }
+
+                // 4. Kirol baliozkotzeak (negatiboak eta berdinketak)
+                if (pLocal < 0 || pVisit < 0) {
+                    JOptionPane.showMessageDialog(this, "Error: Puntos negativos en '" + col0 + "'");
+                    return;
+                }
+                if (pLocal == pVisit && !(pLocal == 0 && pVisit == 0)) {
+                    JOptionPane.showMessageDialog(this, "Aviso: En baloncesto no hay empates (" + col0 + ")");
+                    return;
+                }
+            }
+
+            // Ondo dagoen egiaztatuta dago, orain datuak gordetzen ditugu
+            eguneratuKlasifikazioa(); 
+            Metodoak.gordeDatuak();   
+            JOptionPane.showMessageDialog(this, "Resultados procesados. Se han guardado los partidos completados.");
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Error: " + e.getMessage());
+        }
+    }
+    
+    // --- Metodo Erabilgarriak ---
     private void erakutsiPanelak(String rola) {
         klasifikazioaIkusi.setVisible(true);
         taldeakIkusi.setVisible(true);
