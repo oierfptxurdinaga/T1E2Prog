@@ -36,6 +36,12 @@ public class ErronkaBisuala extends JFrame {
     private DefaultTableModel modeloTabla;
     private JScrollPane scrollTabla;
 
+    //Taldeak Ikusi
+
+    private JComboBox<String> comboBox;
+    private JTable tablaPequena;
+    private JTable tablaGrande;
+    
     public ErronkaBisuala() {
         // --- JFrame Konfigurazioa ---
         setTitle("Bizkaiko Saskibaloi Federazioa");
@@ -191,12 +197,163 @@ public class ErronkaBisuala extends JFrame {
 
         KlasifikazioaPanela.add(titleKlasif); KlasifikazioaPanela.add(scrollTabla);
         KlasifikazioaPanela.add(atzerantzKlasif); KlasifikazioaPanela.add(ateraKlasif);
+      
+        
+        // ---  JOKALARIAK PANELA () ---
 
-        // Otros paneles
-        EmaitzaPanela = panelBigarrenakSortu("EMAITZAK SARTZEKO PANELA");
-        TaldeakPanela = panelBigarrenakSortu("TALDEAK IKUSI PANELA");
-        JokalariakPanela = panelBigarrenakSortu("JOKALARIAK ALDATU PANELA");
+        // Panel para combo + tablas
+
+     // --- JOKALARIAK ALDATU PANELA ---
+        JokalariakPanela = new JPanel(null); // layout absoluto
+        JokalariakPanela.setPreferredSize(new Dimension(1000, 600));
+
+        // --- Título ---
+        JLabel titleJokalariak = new JLabel("JOKALARIAK ALDATU", JLabel.CENTER);
+        titleJokalariak.setFont(titleFont);
+        titleJokalariak.setBounds(50, 20, 900, 30);
+        JokalariakPanela.add(titleJokalariak);
+
+        // --- ComboBox Izquierda ---
+        JComboBox<String> comboIzquierda = new JComboBox<>();
+        comboIzquierda.setBounds(50, 60, 200, 25);
+        JokalariakPanela.add(comboIzquierda);
+        for (Taldea t : Metodoak.taldeakMasterList) {
+        	comboIzquierda.addItem(t.getIzena());
+        }
+       
+
+        // --- ComboBox Derecha ---
+        JComboBox<String> comboDerecha = new JComboBox<>();
+        comboDerecha.setBounds(750, 60, 200, 25);
+        JokalariakPanela.add(comboDerecha);
+        for (Taldea t : Metodoak.taldeakMasterList) {
+        	comboDerecha.addItem(t.getIzena());
+        }
+
+        // --- Panel Izquierda con Scroll (JTable ejemplo) ---
+        String[] columnasIzquierda = {"Izena", "Abizena", "DNI", "Taldea"};
+        DefaultTableModel modeloIzquierda = new DefaultTableModel(columnasIzquierda, 0) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false; // ninguna celda es editable
+            }
+        };
+        JTable tablaIzquierda = new JTable(modeloIzquierda);
+        JScrollPane scrollIzquierda = new JScrollPane(tablaIzquierda);
+        scrollIzquierda.setBounds(50, 100, 400, 400);
+        JokalariakPanela.add(scrollIzquierda);
+
+        // --- Panel Derecha con Scroll (JTable ejemplo) ---
+        String[] columnasDerecha = {"Izena", "Abizena", "DNI", "Taldea"};
+        DefaultTableModel modeloDerecha = new DefaultTableModel(columnasDerecha, 0) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false; // ninguna celda es editable
+            }
+        };        JTable tablaDerecha = new JTable(modeloDerecha);
+        JScrollPane scrollDerecha = new JScrollPane(tablaDerecha);
+        scrollDerecha.setBounds(550, 100, 400, 400);
+        JokalariakPanela.add(scrollDerecha);
+        // Listener del comboBox izquierdo
+        comboIzquierda.addActionListener(e -> {
+            String seleccionado = (String) comboIzquierda.getSelectedItem();
+            Metodoak.actualizarTablasJokalariak(seleccionado, tablaIzquierda);
+        });
+        // Listener del comboBox derecho
+        comboDerecha.addActionListener(e -> {
+            String seleccionado = (String) comboDerecha.getSelectedItem();
+            Metodoak.actualizarTablasJokalariak(seleccionado, tablaDerecha);
+        });
+
+        // --- Botón Aldatu (medio) ---
+        JButton btnAldatu = new JButton("Aldatu");
+        btnAldatu.setBounds(460, 260, 80, 40);
+        btnAldatu.addActionListener(e -> {
+            // Aquí irá la lógica para intercambiar o modificar jugadores
+        });
+        JokalariakPanela.add(btnAldatu);
+
+        // --- Botón Irten ---
+        JButton btnIrten = new JButton("Irten");
+        btnIrten.setBounds(50, 520, 100, 30);
+        btnIrten.addActionListener(e -> cardLayout.show(contentPanel, "Hasiera"));
+        JokalariakPanela.add(btnIrten);
+
+        // --- Botón Atera ---
+        JButton btnAtera = new JButton("Atera");
+        btnAtera.setBounds(850, 520, 100, 30);
+        btnAtera.addActionListener(e -> Metodoak.atera());
+        JokalariakPanela.add(btnAtera);
+        
+        
+        
+        
+        
+        
+        
+        
+        // --- TALDEAK PANELA () ---
+
+        
+     // Panel para combo + tablas
+        TaldeakPanela = new JPanel(null); // layout absoluto
+        TaldeakPanela.setPreferredSize(new Dimension(1000,600));
+
+        // --- ComboBox arriba ---
+        comboBox = new JComboBox<>();
+        for (Taldea t : Metodoak.taldeakMasterList) {
+            comboBox.addItem(t.getIzena());
+        }
+        comboBox.setBounds(400, 10, 200, 25); // posición y tamaño
+        TaldeakPanela.add(comboBox);
+
+        // --- Tabla pequeña ---
+        String[] columnasPequena = {"SorreraUrtea", "Lehendakari", "N_Bazkideak"};
+        DefaultTableModel modeloPequena = new DefaultTableModel(columnasPequena,0);
+        tablaPequena = new JTable(modeloPequena);
+        tablaPequena.setFillsViewportHeight(true);
+
+        JScrollPane scrollPequena = new JScrollPane(tablaPequena);
+        scrollPequena.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
+        scrollPequena.setBounds(50, 50, 900, tablaPequena.getRowHeight() + tablaPequena.getTableHeader().getPreferredSize().height);
+        TaldeakPanela.add(scrollPequena);
+
+        // --- Tabla grande ---
+        String[] columnasGrande = {"Izena","Abizena","JaiotzeData","NAN","Taldea","Prezioa","JokalariarenPuntuak"};
+        DefaultTableModel modeloGrande = new DefaultTableModel(columnasGrande,0);
+        tablaGrande = new JTable(modeloGrande);
+        tablaGrande.setFillsViewportHeight(true);
+
+        JScrollPane scrollGrande = new JScrollPane(tablaGrande);
+        scrollGrande.setBounds(50, 120, 900, 400); // ajustable a tu gusto
+        scrollGrande.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        TaldeakPanela.add(scrollGrande);
+
+        // Listener del comboBox
+        comboBox.addActionListener(e -> {
+            String seleccionado = (String) comboBox.getSelectedItem();
+            Metodoak.actualizarTablasTaldeak(seleccionado, tablaPequena, tablaGrande);
+        });
+     // --- Botones Atzerantz y Atera para TaldeakPanela ---
+        JButton atzerantzTaldeak = new JButton("Atzerantz");
+        atzerantzTaldeak.setBounds(50, 540, 100, 30); // posición similar a otros paneles
+        atzerantzTaldeak.addActionListener(e -> cardLayout.show(contentPanel, "Hasiera"));
+
+        JButton ateraTaldeak = new JButton("Atera");
+        ateraTaldeak.setBounds(850, 540, 100, 30); // posición similar a otros paneles
+        ateraTaldeak.addActionListener(e -> Metodoak.atera());
+
+        // Añadir al panel
+        TaldeakPanela.add(atzerantzTaldeak);
+        TaldeakPanela.add(ateraTaldeak);
+
+
+
+
+    
+    EmaitzaPanela = panelBigarrenakSortu("EMAITZAK SARTZEKO PANELA");
     }
+
 
     private void eguneratuKlasifikazioa() {
         modeloTabla.setRowCount(0);

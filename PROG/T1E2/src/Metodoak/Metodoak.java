@@ -1,10 +1,16 @@
 package Metodoak;
 
+import java.awt.BorderLayout;
 import java.io.*; 
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
 
 import E2.*;
 
@@ -98,6 +104,88 @@ public class Metodoak {
 
     }
 	};
+	 public static void actualizarTablasJokalariak(String seleccionado, JTable tablaizquierdaoderecha) {
+		 if (seleccionado == null) {
+		        return;
+		    }
+
+		    Taldea t = null;
+		  // Buscar el Taldea seleccionado con un for normal
+		    for (Taldea taldea : taldeakMasterList) {
+		        if (taldea.getIzena().equals(seleccionado)) {
+		            t = taldea;
+		            break;
+		        }
+		       
+            		}
+		    if (t != null) {
+			    DefaultTableModel modeloizquierdaoderecha = (DefaultTableModel) tablaizquierdaoderecha.getModel();
+			    modeloizquierdaoderecha.setRowCount(0); // Limpiar tabla
+	            		for (Jokalaria j : t.getJokalariak()) {
+	            			modeloizquierdaoderecha.addRow(new Object[] {
+	            		        j.getIzena(),
+	            		        j.getAbizena(),
+	            		        j.getJaiotzeData(),
+	            		        j.getNAN(),
+	            		        t.getIzena(),
+	            		        j.getPrezioa(),
+	            		        j.getJokalarienPuntuak()
+	            		    });
+		    }
+		    }
+            }
+        
+	 
+
+	 public static void actualizarTablasTaldeak(String seleccionado, JTable tablaPequena, JTable tablaGrande) {
+		 if (seleccionado == null) {
+		        return;
+		    }
+
+		    Taldea t = null;
+
+		    // Buscar el Taldea seleccionado con un for normal
+		    for (Taldea taldea : taldeakMasterList) {
+		        if (taldea.getIzena().equals(seleccionado)) {
+		            t = taldea;
+		            break;
+		        }
+		    }
+
+	            if (t != null) {
+	                DefaultTableModel modeloPequena = (DefaultTableModel) tablaPequena.getModel();
+	                modeloPequena.setRowCount(0); // Limpiar tabla
+
+	                modeloPequena.addRow(new Object[]{
+	                        t.getIzena(),
+	                        t.getSorreraUrtea(),
+	                        t.getLehendakari(),
+	                        t.getN_Bazkideak(),
+	                        t.getPuntuakF(),
+	                        t.getPuntuakC(),
+	                        t.getPuntuTotalak(),
+	                        t.getIrabazitakoak(),
+	                        t.getGaldutakoak(),
+	                        t.getJokalariak().size() // número de jugadores
+	                });
+	                DefaultTableModel modeloGrande = (DefaultTableModel) tablaGrande.getModel();
+	                modeloGrande.setRowCount(0); // Limpiar tabla
+	                		for (Jokalaria j : t.getJokalariak()) {
+	                		    modeloGrande.addRow(new Object[] {
+	                		        j.getIzena(),
+	                		        j.getAbizena(),
+	                		        j.getJaiotzeData(),
+	                		        j.getNAN(),
+	                		        t.getIzena(),
+	                		        j.getPrezioa(),
+	                		        j.getJokalarienPuntuak()
+	                		    });
+	                		}
+	                }
+	            }
+
+
+
 	
 	// --- Login Metodoa ---
 	public static String login(String erabiltzailea, String pasahitza) {

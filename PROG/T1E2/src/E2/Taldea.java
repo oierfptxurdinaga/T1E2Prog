@@ -108,4 +108,17 @@ public class Taldea implements Serializable {
 	public String getSorreraUrtea() {
 		return SorreraUrtea;
 	}
+	@Override
+	public String toString() {
+	    String texto = "=== " + Izena + " ===\n";
+	    texto += "Lehendakari: " + Lehendakari + "\n";
+	    texto += "Sorrera Urtea: " + SorreraUrtea + "\n";
+	    texto += "Baskide Kopurua: " + N_Bazkideak + "\n";
+	    texto += "Jokalariak:\n";
+	    for (Jokalaria j : Jokalariak) {
+	        texto += "  - " + j + "\n"; // usa el toString() de Jokalaria
+	    }
+	    texto += "\n";
+	    return texto;
+	}
 }
