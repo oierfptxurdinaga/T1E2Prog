@@ -2,8 +2,8 @@ package E2;
 
 import java.io.Serializable;
 
-public class Jokalaria implements Serializable {
-    private static final long serialVersionUID = 1L;
+public class Jokalaria implements Serializable, Comparable<Jokalaria> {
+	private static final long serialVersionUID = 1L;
 	
 	
 	private String Izena;
@@ -25,6 +25,16 @@ public class Jokalaria implements Serializable {
 		Taldea = taldea;
 		Prezioa = prezioa;
 		JokalarienPuntuak = jokalarienPuntuak;
+	}
+	public Jokalaria(Jokalaria besteJokalariBat) {
+	    super();
+	    this.Izena = besteJokalariBat.Izena;
+	    this.Abizena = besteJokalariBat.Abizena;
+	    this.JaiotzeData = besteJokalariBat.JaiotzeData;
+	    this.NAN = besteJokalariBat.NAN;
+	    this.Taldea = besteJokalariBat.Taldea;
+	    this.Prezioa = besteJokalariBat.Prezioa;
+	    this.JokalarienPuntuak = besteJokalariBat.JokalarienPuntuak;
 	}
 
 	public String getIzena() {
@@ -73,5 +83,17 @@ public class Jokalaria implements Serializable {
 
 	public String getNAN() {
 		return NAN;
+	}
+	@Override
+	public int compareTo(Jokalaria besteJokalaria) {
+	    // Primero comparamos por Apellido (Abizena)
+	    int resultado = this.Abizena.compareToIgnoreCase(besteJokalaria.getAbizena());
+	    
+	    // Si los apellidos son iguales, comparamos por Nombre (Izena)
+	    if (resultado == 0) {
+	        resultado = this.Izena.compareToIgnoreCase(besteJokalaria.getIzena());
+	    }
+	    
+	    return resultado;
 	}
 }

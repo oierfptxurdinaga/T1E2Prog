@@ -227,13 +227,15 @@ public class ErronkaBisuala extends JFrame {
         for (Taldea t : Metodoak.taldeakMasterList) {
             comboIzquierda.addItem(t.getIzena());
         }
-
+    
+     
         JComboBox<String> comboDerecha = new JComboBox<>();
         comboDerecha.setBounds(750, 60, 200, 25);
         JokalariakPanela.add(comboDerecha);
         for (Taldea t : Metodoak.taldeakMasterList) {
             comboDerecha.addItem(t.getIzena());
         }
+     
 
         String[] columnasIzquierda = {"Izena", "Abizena", "DNI", "Taldea"};
         DefaultTableModel modeloIzquierda = new DefaultTableModel(columnasIzquierda, 0) {
@@ -254,20 +256,40 @@ public class ErronkaBisuala extends JFrame {
         JScrollPane scrollDerecha = new JScrollPane(tablaDerecha);
         scrollDerecha.setBounds(550, 100, 400, 400);
         JokalariakPanela.add(scrollDerecha);
-
-        comboIzquierda.addActionListener(e -> {
-            String seleccionado = (String) comboIzquierda.getSelectedItem();
-            Metodoak.actualizarTablasJokalariak(seleccionado, tablaIzquierda);
-        });
+     // Listener del comboBox derecho
         comboDerecha.addActionListener(e -> {
             String seleccionado = (String) comboDerecha.getSelectedItem();
-            Metodoak.actualizarTablasJokalariak(seleccionado, tablaDerecha);
+            Metodoak.meterlosJokalaris(seleccionado, tablaDerecha);
         });
-
+        // Listener del comboBox izquierdo
+        comboIzquierda.addActionListener(e -> {
+            String seleccionado = (String) comboIzquierda.getSelectedItem();
+            Metodoak.meterlosJokalaris(seleccionado, tablaIzquierda);
+        });
         JButton btnAldatu = new JButton("Aldatu");
         btnAldatu.setBounds(460, 260, 80, 40);
         btnAldatu.addActionListener(e -> {
             // Lógica para intercambiar jugadores
+        	   String seleccionadoderecha = (String) comboDerecha.getSelectedItem();
+               String seleccionadoizquierda = (String) comboIzquierda.getSelectedItem();
+
+           Metodoak.actualizarTablasJokalariak(seleccionadoderecha, seleccionadoizquierda, tablaDerecha, tablaIzquierda);
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
         });
         JokalariakPanela.add(btnAldatu);
 
@@ -562,4 +584,4 @@ public class ErronkaBisuala extends JFrame {
     public static void main(String[] args) {
         EventQueue.invokeLater(() -> new ErronkaBisuala());
     }
-}
+}														
