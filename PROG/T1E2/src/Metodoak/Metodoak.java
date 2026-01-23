@@ -9,13 +9,53 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import E2.*;
 
+/**
+ * Metodoak klaseak aplikazioaren negozio-logika eta datuen kudeaketa zentralizatzen ditu.
+ * <p>
+ * Klase honek honako ardurak ditu:
+ * </p>
+ * <ul>
+ *   <li>Datuen karga eta gordetzea (serializazioa)</li>
+ *   <li>Erabiltzaileen autentifikazioa eta baimenak</li>
+ *   <li>Taulen eguneraketa (taldeak eta jokalariak)</li>
+ *   <li>Jokalarien trukea talde desberdinen artean</li>
+ *   <li>Aplikaziotik irteteko logika</li>
+ * </ul>
+ *
+ * <p>
+ * Metodo guztiak estatikoak dira, klase hau utilitate-klase gisa erabiltzeko.
+ * </p>
+ *
+ * @author ZureIzena
+ * @version 1.0
+ */	
 public class Metodoak {
-	
+	/**
+     * Aplikazioko erabiltzaile mota guztien zerrenda.
+     */
 	private static List<ErabiltzaileMota> erabiltzaileaklist;
+	 /**
+     * Talde guztien zerrenda nagusia.
+     * <p>
+     * Aplikazio osoan partekatzen den egitura da eta bertan
+     * gordetzen dira taldeak eta haien jokalariak.
+     * </p>
+     */
 	public static ArrayList<Taldea> taldeakMasterList = new ArrayList<>();
 
 	// --- Fitxategien kudeaketa ---
-
+	/**
+     * Datuak fitxategitik kargatzen ditu.
+     * <p>
+     * "datuak.ser" fitxategitik talde guztiak irakurtzen ditu
+     * serializazioaren bidez.
+     * </p>
+     *
+     * <p>
+     * Fitxategia existitzen ez bada edo errorea gertatzen bada,
+     * errore-mezu bat bistaratzen da.
+     * </p>
+     */
 	@SuppressWarnings("unchecked")
 	public static void kargatuDatuak() {
 		File f = new File("datuak.ser");
@@ -29,7 +69,13 @@ public class Metodoak {
 			JOptionPane.showMessageDialog(null, "Ez da Datuak.ser artxiboa aurkitu", "Errorea", JOptionPane.ERROR_MESSAGE);
 		}
 	}
-
+	/**
+     * Uneko datuak fitxategian gordetzen ditu.
+     * <p>
+     * Taldeen zerrenda nagusia ("taldeakMasterList")
+     * "datuak.ser" fitxategian gordetzen da.
+     * </p>
+     */
 	public static void gordeDatuak() {
 		try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("datuak.ser"))) {
 			oos.writeObject(taldeakMasterList);
@@ -37,7 +83,13 @@ public class Metodoak {
 			JOptionPane.showMessageDialog(null, "Ezin izan dira gorde aldaketak", "Errorea", JOptionPane.ERROR_MESSAGE);
 		}
 	}
-	
+	/**
+     * Aplikazioko erabiltzaileak hasieratzen ditu.
+     * <p>
+     * Metodo honek erabiltzaile finko batzuk sortzen ditu
+     * (administradorea, presidentea eta erabiltzaile arruntak).
+     * </p>
+     */
 	public static void kargatuErabiltzaileak() {
 		erabiltzaileaklist = new ArrayList<>();
 		erabiltzaileaklist.add(new Administradorea("Eder", "Bilbao", "12345678A", "ebilbao", "12345"));
@@ -47,7 +99,26 @@ public class Metodoak {
 	}
 	
 	// --- Logika Metodoak ---
-
+	/**
+     * Bi talde desberdinetako jokalariak trukatzen ditu.
+     * <p>
+     * Taula bakoitzean aukeratutako jokalari bana hartzen da
+     * eta talde batetik bestera aldatzen dira.
+     * </p>
+     *
+     * <p>
+     * Trukea egin ondoren:
+     * </p>
+     * <ul>
+     *   <li>Datuak gordetzen dira</li>
+     *   <li>Taulak eguneratzen dira</li>
+     * </ul>
+     *
+     * @param seleccionadoderecha eskuineko taldearen izena
+     * @param seleccionadoziquerda ezkerreko taldearen izena
+     * @param tablaDerecha eskuineko taldearen jokalarien taula
+     * @param tablaIzquierda ezkerreko taldearen jokalarien taula
+     */
 	public static void actualizarTablasJokalariak(String seleccionadoderecha, String seleccionadoziquerda, JTable tablaDerecha, JTable tablaIzquierda) {
 	    if (seleccionadoziquerda == null || seleccionadoderecha == null) return;
 	    
@@ -89,7 +160,16 @@ public class Metodoak {
 
 	    JOptionPane.showMessageDialog(null, "Jokalariak ondo aldatu dira!");
 	}
-        
+	/**
+     * Talde bateko jokalariak taula batean bistaratzen ditu.
+     * <p>
+     * Jokalarien zerrenda izenaren arabera ordenatzen da
+     * taulan erakutsi aurretik.
+     * </p>
+     *
+     * @param seleccionado aukeratutako taldearen izena
+     * @param tabla jokalariak bistaratuko diren JTable-a
+     */
 	public static void meterlosJokalaris(String seleccionado, JTable tabla) {
 		if (seleccionado == null) return;
 
@@ -115,7 +195,20 @@ public class Metodoak {
 			}
 		}
 	}
-
+	/**
+     * Talde baten informazioa taula desberdinetan eguneratzen du.
+     * <p>
+     * Bi taula eguneratzen dira:
+     * </p>
+     * <ul>
+     *   <li>Taldearen laburpena (datu orokorrak)</li>
+     *   <li>Jokalarien zerrenda osoa</li>
+     * </ul>
+     *
+     * @param seleccionado aukeratutako taldearen izena
+     * @param tablaPequena taldearen laburpena erakusten duen taula
+     * @param tablaGrande jokalarien zerrenda erakusten duen taula
+     */
 	public static void actualizarTablasTaldeak(String seleccionado, JTable tablaPequena, JTable tablaGrande) {
 		if (seleccionado == null) return;
 
@@ -151,7 +244,17 @@ public class Metodoak {
 			}
 		}
 	}
-
+	/**
+     * Erabiltzailearen login-a egiaztatzen du.
+     * <p>
+     * Erabiltzaile-izena eta pasahitza zuzenak badira,
+     * erabiltzailearen rola itzultzen da.
+     * </p>
+     *
+     * @param erabiltzailea erabiltzaile-izena
+     * @param pasahitza pasahitza
+     * @return erabiltzailearen rola, edo null baldin eta login-a okerra bada
+     */
 	public static String login(String erabiltzailea, String pasahitza) {
 		if (erabiltzaileaklist == null) kargatuErabiltzaileak();
 		
@@ -162,7 +265,14 @@ public class Metodoak {
 		}
 		return null;
 	}
-
+	/**
+     * Aplikaziotik irteteko prozesua kudeatzen du.
+     * <p>
+     * Erabiltzaileari galdetzen dio aldaketak gorde nahi dituen ala ez.
+     * Aukeraren arabera, datuak gorde eta aplikazioa ixten da,
+     * edo zuzenean ixten da.
+     * </p>
+     */
 	public static void atera() {
 		int respuesta = JOptionPane.showConfirmDialog(null, "¿Atera baino lehen, gorde nahi duzu?", "Berrespena", JOptionPane.YES_NO_CANCEL_OPTION);
 

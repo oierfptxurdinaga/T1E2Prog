@@ -8,6 +8,42 @@ import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import E2.Taldea;
 import Metodoak.Metodoak;
+/**
+ * ErronkaBisuala klasea aplikazioaren leiho nagusia da.
+ * <p>
+ * Klase honek Bizkaiko Saskibaloi Federazioaren aplikazio grafikoa
+ * inplementatzen du Java Swing erabiliz. {@link CardLayout} baten bidez
+ * aplikazioko panel desberdinak kudeatzen dira.
+ * </p>
+ *
+ * <p>
+ * Aplikazioak honako funtzionalitate hauek eskaintzen ditu:
+ * </p>
+ * <ul>
+ *   <li>Erabiltzaileen autentifikazioa (Login)</li>
+ *   <li>Ligako sailkapena ikustea</li>
+ *   <li>Taldeen informazioa bistaratzea</li>
+ *   <li>Partiden emaitzak sartzea eta balidatzea</li>
+ *   <li>Jokalarien kudeaketa eta talde arteko trukea</li>
+ * </ul>
+ *
+ * <p>
+ * Erabiltzailearen rolaren arabera, funtzionalitate batzuk aktibo edo
+ * ezkutuan egongo dira:
+ * </p>
+ * <ul>
+ *   <li><b>Admin</b>: emaitzak sartzeko aukera</li>
+ *   <li><b>Presidentea</b>: jokalariak aldatzeko aukera</li>
+ * </ul>
+ *
+ * <p>
+ * Negozio-logika eta datuen kudeaketa {@link Metodoak} klasearen bidez
+ * egiten da.
+ * </p>
+ *
+ * @author ZureIzena
+ * @version 1.0
+ */
 
 public class ErronkaBisuala extends JFrame {
 
@@ -46,7 +82,14 @@ public class ErronkaBisuala extends JFrame {
     private JButton atzerantzEmaitza; 
     private JButton ateraEmaitza; 
     private JButton gordeEmaitza;
-    
+    /**
+     * ErronkaBisuala klasearen eraikitzaile nagusia.
+     * <p>
+     * Leihoa sortzen du, aplikazioko datuak kargatzen ditu, panel guztiak
+     * hasieratzen ditu, ekintzak (listeners) konfiguratzen ditu eta
+     * login panela bistaratzen du hasieran.
+     * </p>
+     */
     public ErronkaBisuala() {
         // --- JFrame Konfigurazioa ---
         setTitle("Bizkaiko Saskibaloi Federazioa");
@@ -139,6 +182,20 @@ public class ErronkaBisuala extends JFrame {
         cardLayout.show(contentPanel, "Login");
         setVisible(true);
     }
+    /**
+     * Aplikazioko panel grafiko guztiak hasieratzen ditu.
+     * <p>
+     * Panel hauek sortzen eta konfiguratzen ditu:
+     * </p>
+     * <ul>
+     *   <li>Login panela</li>
+     *   <li>Hasierako panela</li>
+     *   <li>Klasifikazio panela</li>
+     *   <li>Emaitzen panela</li>
+     *   <li>Taldeen panela</li>
+     *   <li>Jokalarien kudeaketa panela</li>
+     * </ul>
+     */
 
     private void inizializatuPanelak() {
         // --- LOGIN PANELA ---
@@ -390,6 +447,24 @@ public class ErronkaBisuala extends JFrame {
         EmaitzaPanela.add(gordeEmaitza);
         EmaitzaPanela.add(ateraEmaitza);
     }
+    /**
+     * Ligako klasifikazioa kalkulatu eta eguneratzen du.
+     * <p>
+     * Sartutako emaitzen arabera, talde bakoitzaren estatistikak
+     * berrabiarazten eta kalkulatzen dira:
+     * </p>
+     * <ul>
+     *   <li>Puntu totalak</li>
+     *   <li>Irabazitako partidak</li>
+     *   <li>Galdutako partidak</li>
+     *   <li>Aldeko eta aurkako puntuak</li>
+     * </ul>
+     *
+     * <p>
+     * Ondoren, taldeak puntuen eta puntu diferentziaren arabera
+     * ordenatzen dira eta sailkapenaren taula eguneratzen da.
+     * </p>
+     */
 
     // --- Klasifikazioa Eguneratu  ---
     private void eguneratuKlasifikazioa() {
@@ -470,7 +545,13 @@ public class ErronkaBisuala extends JFrame {
             modeloTabla.addRow(fila);
         }
     }
-    
+    /**
+     * Ligako jardunaldiak eta partidak automatikoki sortzen ditu.
+     * <p>
+     * Joan-etorriko egutegia sortzen da, guztira 10 jardunaldirekin.
+     * Metodo hau behin bakarrik exekutatuko da emaitzen taula hutsik badago.
+     * </p>
+     */
     // --- Emaitzak Prozesatu ---
     private void generatuJornadak() {
         if (modeloEmaitzak.getRowCount() > 0) return;
@@ -499,7 +580,23 @@ public class ErronkaBisuala extends JFrame {
             }
         }
     }
-    
+    /**
+     * Erabiltzaileak sartutako emaitzak balidatu eta prozesatzen ditu.
+     * <p>
+     * Honako egiaztapen hauek egiten dira:
+     * </p>
+     * <ul>
+     *   <li>Balioak zenbakiak direla</li>
+     *   <li>Puntu negatiborik ez dagoela</li>
+     *   <li>Berdinketarik ez dagoela</li>
+     *   <li>Partida bakoitza osorik beteta dagoela</li>
+     * </ul>
+     *
+     * <p>
+     * Datuak zuzenak badira, sailkapena eguneratu eta datuak
+     * fitxategian gordetzen dira.
+     * </p>
+     */
     private void prozesatuEmaitzak() {
         if (tablaEmaitzak.isEditing()) {
             tablaEmaitzak.getCellEditor().stopCellEditing();
@@ -554,7 +651,12 @@ public class ErronkaBisuala extends JFrame {
             JOptionPane.showMessageDialog(this, "Errorea: " + e.getMessage());
         }
     }
-    
+    /**
+     * Erabiltzailearen rolaren arabera botoien ikusgarritasuna
+     * konfiguratzen du.
+     *
+     * @param rola autentifikatutako erabiltzailearen rola
+     */
     // --- Metodo Erabilgarriak ---
     private void erakutsiPanelak(String rola) {
         klasifikazioaIkusi.setVisible(true);
@@ -562,14 +664,23 @@ public class ErronkaBisuala extends JFrame {
         sartuEmaitza.setVisible(rola.equals("Admin"));
         jokalariakAldatu.setVisible(rola.equals("Presidentea"));
     }
-
+    /**
+     * Aplikazioko osagai bisualak (irudiak) kargatzen eta esleitzen ditu.
+     */
     private void konfiguratuOsagaiBisualak() {
         kargatuIrudia(logoaImg1, 200, 150, "/Multimedia/logoa.png");
         kargatuIrudia(logoaImg2, 200, 150, "/Multimedia/logoa.png");
         kargatuIrudia(img1, 150, 150, "/Multimedia/img1.png");
         kargatuIrudia(img2, 150, 150, "/Multimedia/img2.png");
     }
-
+    /**
+     * Irudi bat baliabideetatik kargatu eta JLabel batean ezartzen du.
+     *
+     * @param label irudia bistaratuko duen JLabel-a
+     * @param w irudiaren zabalera
+     * @param h irudiaren altuera
+     * @param path irudiaren fitxategiaren bidea
+     */
     private void kargatuIrudia(JLabel label, int w, int h, String path) {
         try {
             java.net.URL url = getClass().getResource(path);
@@ -580,7 +691,14 @@ public class ErronkaBisuala extends JFrame {
             }
         } catch (Exception e) { label.setText("Error Imagen"); }
     }
-
+    /**
+     * Aplikazioaren sarrera-puntua.
+     * <p>
+     * Swing-eko gertaeren harian aplikazioa abiarazten du.
+     * </p>
+     *
+     * @param args komando-lerroko argumentuak
+     */
     public static void main(String[] args) {
         EventQueue.invokeLater(() -> new ErronkaBisuala());
     }

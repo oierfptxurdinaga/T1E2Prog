@@ -1,7 +1,24 @@
 package E2;
 
 import java.util.ArrayList;
-
+/**
+ * Denboraldia klaseak ligako denboraldi bat irudikatzen du.
+ * <p>
+ * Denboraldi batek honako informazioa biltzen du:
+ * </p>
+ * <ul>
+ *   <li>Denboraldiaren data edo identifikatzailea</li>
+ *   <li>Jardunaldi guztien zerrenda</li>
+ *   <li>Denboraldi osoko puntuazioen zerrenda</li>
+ * </ul>
+ *
+ * <p>
+ * Klase hau ligaren egitura modelatzeko erabiltzen da.
+ * </p>
+ *
+ * @author ZureIzena
+ * @version 1.0
+ */
 public class Denboraldia {
 	private String Data;
 	private ArrayList<Jaurdunaldia> Denboraldia;
@@ -12,6 +29,7 @@ public class Denboraldia {
 		Denboraldia = denboraldia;
 		DenboraldiaP = denboraldiaP;
 	}
+	
 	public String getData() {
 		return Data;
 	}

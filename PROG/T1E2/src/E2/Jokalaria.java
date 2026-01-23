@@ -1,7 +1,21 @@
 package E2;
 
 import java.io.Serializable;
-
+/**
+ * Jokalaria klaseak ligako jokalari bat irudikatzen du.
+ * <p>
+ * Klase honek {@link Serializable} interfazea inplementatzen du,
+ * jokalarien datuak fitxategietan gorde ahal izateko, eta
+ * {@link Comparable} interfazea ere bai, jokalariak ordenatzeko.
+ * </p>
+ *
+ * <p>
+ * Jokalariak abizenaren eta izenaren arabera ordenatzen dira.
+ * </p>
+ *
+ * @author ZureIzena
+ * @version 1.0
+ */
 public class Jokalaria implements Serializable, Comparable<Jokalaria> {
 	private static final long serialVersionUID = 1L;
 	

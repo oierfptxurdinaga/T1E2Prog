@@ -3,7 +3,25 @@ package E2;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
-
+/**
+ * Taldea klaseak saskibaloi talde bat irudikatzen du.
+ * <p>
+ * Klase honek taldearen informazio nagusia gordetzen du:
+ * izena, sorrera urtea, lehendakaria, bazkideen kopurua,
+ * puntuazioa, irabazitako eta galduko partidak,
+ * eta jokalariak.
+ * </p>
+ * <p>
+ * Talde bakoitza {@link Jokalaria} objektuen zerrenda batekin erlazionatuta dago,
+ * jokalari bakoitzaren informazioa gordetzeko.
+ * </p>
+ * <p>
+ * Klase honek Serializable interfaze-a inplementatzen du, datuak fitxategi batean gordetzeko aukera emateko.
+ * </p>
+ * 
+ * @author ZureIzena
+ * @version 1.0
+ */
 public class Taldea implements Serializable {
     private static final long serialVersionUID = 1L;
 	
