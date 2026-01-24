@@ -1,0 +1,7 @@
+Erabiltzaileak eta Pasahitzak
+Administradorea: ebilbao
+Pasahitza: 12345
+Presidentea: aelexpe
+Pasahitza: 12345
+Erabiltzaile Normala: kmunoz / abarcena
+Pasahitza: 12345

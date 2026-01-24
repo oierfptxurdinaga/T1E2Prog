@@ -1,11 +1,31 @@
 package E2;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
-
-public class Taldea {
+/**
+ * Taldea klaseak saskibaloi talde bat irudikatzen du.
+ * <p>
+ * Klase honek taldearen informazio nagusia gordetzen du:
+ * izena, sorrera urtea, lehendakaria, bazkideen kopurua,
+ * puntuazioa, irabazitako eta galduko partidak,
+ * eta jokalariak.
+ * </p>
+ * <p>
+ * Talde bakoitza {@link Jokalaria} objektuen zerrenda batekin erlazionatuta dago,
+ * jokalari bakoitzaren informazioa gordetzeko.
+ * </p>
+ * <p>
+ * Klase honek Serializable interfaze-a inplementatzen du, datuak fitxategi batean gordetzeko aukera emateko.
+ * </p>
+ * 
+ * @author ZureIzena
+ * @version 1.0
+ */
+public class Taldea implements Serializable {
+    private static final long serialVersionUID = 1L;
+	
 	private String Izena;
-	private String Logoa;
 	private String SorreraUrtea;
 	private String Lehendakari;
 	private int N_Bazkideak;
@@ -14,13 +34,12 @@ public class Taldea {
 	private int PuntuTotalak;
 	private int Irabazitakoak;
 	private int Galdutakoak;
-	private ArrayList<Jokalaria> jokalariak;
+	private ArrayList<Jokalaria> Jokalariak;
 	
-	public Taldea(String izena, String logoa, String sorreraUrtea, String lehendakari, int n_Bazkideak, int puntuakF,
-			int puntuakC, int puntuTotalak, int irabazitakoak, int galdutakoak, ArrayList<Jokalaria> jokalariak2) {
+	public Taldea(String izena,  String sorreraUrtea, String lehendakari, int n_Bazkideak, int puntuakF,
+			int puntuakC, int puntuTotalak, int irabazitakoak, int galdutakoak, ArrayList<Jokalaria> jokalariak) {
 		super();
 		Izena = izena;
-		Logoa = logoa;
 		SorreraUrtea = sorreraUrtea;
 		Lehendakari = lehendakari;
 		N_Bazkideak = n_Bazkideak;
@@ -29,7 +48,7 @@ public class Taldea {
 		PuntuTotalak = puntuTotalak;
 		Irabazitakoak = irabazitakoak;
 		Galdutakoak = galdutakoak;
-		this.jokalariak = jokalariak2;
+		this.Jokalariak = jokalariak;
 	}
 
 	public String getIzena() {
@@ -38,14 +57,6 @@ public class Taldea {
 
 	public void setIzena(String izena) {
 		Izena = izena;
-	}
-
-	public String getLogoa() {
-		return Logoa;
-	}
-
-	public void setLogoa(String logoa) {
-		Logoa = logoa;
 	}
 
 	public String getLehendakari() {
@@ -105,14 +116,27 @@ public class Taldea {
 	}
 
 	public ArrayList<Jokalaria> getJokalariak() {
-		return jokalariak;
+		return Jokalariak;
 	}
 
 	public void setJokalariak(ArrayList<Jokalaria> jokalariak) {
-		this.jokalariak = jokalariak;
+		this.Jokalariak = jokalariak;
 	}
 
 	public String getSorreraUrtea() {
 		return SorreraUrtea;
+	}
+	@Override
+	public String toString() {
+	    String texto = "=== " + Izena + " ===\n";
+	    texto += "Lehendakari: " + Lehendakari + "\n";
+	    texto += "Sorrera Urtea: " + SorreraUrtea + "\n";
+	    texto += "Baskide Kopurua: " + N_Bazkideak + "\n";
+	    texto += "Jokalariak:\n";
+	    for (Jokalaria j : Jokalariak) {
+	        texto += "  - " + j + "\n"; // usa el toString() de Jokalaria
+	    }
+	    texto += "\n";
+	    return texto;
 	}
 }

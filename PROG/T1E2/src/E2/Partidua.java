@@ -1,5 +1,25 @@
 package E2;
-
+/**
+ * Partidua klaseak ligako partida bat irudikatzen du.
+ * <p>
+ * Partida batek honako informazioa gordetzen du:
+ * </p>
+ * <ul>
+ *   <li>Talde lokala</li>
+ *   <li>Talde bisitaria</li>
+ *   <li>Talde bakoitzaren emaitza</li>
+ *   <li>Partidaren data</li>
+ *   <li>Partidaren ordua</li>
+ * </ul>
+ *
+ * <p>
+ * Klase hau {@link Jaurdunaldia} klasearekin erlazionatuta dago,
+ * jardunaldi bakoitzeko partidak kudeatzeko erabiltzen baita.
+ * </p>
+ *
+ * @author ZureIzena
+ * @version 1.0
+ */
 public class Partidua {
 	private String TaldeLokala;
 	private String TaldeBisitari;

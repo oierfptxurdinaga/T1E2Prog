@@ -1,5 +1,20 @@
 package E2;
-
+/**
+ * ErabiltzaileNormala klaseak sistemako erabiltzaile arrunt bat
+ * irudikatzen du.
+ * <p>
+ * Klase honek {@link ErabiltzaileMota} klase abstraktutik heredatzen du
+ * eta erabiltzaile arruntentzako baimen maila ezartzen du.
+ * </p>
+ *
+ * <p>
+ * Erabiltzaile arruntek normalean kontsulta edo oinarrizko ekintzak
+ * egiteko baimenak dituzte.
+ * </p>
+ *
+ * @author ZureIzena
+ * @version 1.0
+ */
 public class ErabiltzaileNormala extends ErabiltzaileMota {
 
 	public ErabiltzaileNormala(String izena, String abizena, String NAN, String erabiltzailea, String pasahitza) {
@@ -35,8 +50,8 @@ public class ErabiltzaileNormala extends ErabiltzaileMota {
 	}
 
 	@Override
-	public boolean baimenak() {
-		return false;
+	public String baimenak() {
+		return "Arrunta";
 	}
 
 }
